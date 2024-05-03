@@ -1,0 +1,58 @@
+.auth_page {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fdfafa;
+  overflow: hidden;
+}
+.socio {
+  background: rgb(29, 29, 29);
+}
+
+.auth_page .form {
+  background: white;
+  width: 400px;
+  padding: 25px 25px;
+  border-radius: 10px;
+  border: 1px solid lightgray;
+  box-shadow: 0 2px 4px 0 rgba(179, 178, 178, 0.2),
+    0 6px 20px 0 rgba(205, 204, 204, 0.19);
+}
+
+.auth_page .reg-form {
+  background: white;
+  width: 500px;
+  padding: 25px 25px;
+  border-radius: 10px;
+  border: 1px solid lightgray;
+  box-shadow: 0 2px 4px 0 rgba(179, 178, 178, 0.2),
+    0 6px 20px 0 rgba(205, 204, 204, 0.19);
+}
+
+.auth_page form .pass {
+  position: relative;
+}
+
+.auth_page form .pass small {
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  opacity: 0.5;
+}
+.inputs {
+  background: #ecf6f9 !important;
+  border: transparent;
+  border-radius: 0px !important;
+  border-bottom: 2px solid #0dcaf0;
+  padding-left: 15px;
+}
+.border-radius {
+  border-radius: 50px;
+}
+.image img {
+  border-radius: 50px;
+}
