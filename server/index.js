@@ -9,7 +9,15 @@ const path = require("path");
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+// app.use(cors());
+
+app.use(
+  cors({
+    origin: "https://socio-sphere-app.vercel.app",
+    credentials: true,
+  })
+);
+
 app.use(cookieParser());
 
 // Socket
