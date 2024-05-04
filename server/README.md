@@ -1,6 +1,6 @@
-# MERN Stack - Build a social media app
+# MERN Stack - Social media app
 
-> MERN Stack Build a social media app with MERN + Redux + Bootstrap 5
+> MERN Stack - Social media app with MERN + Redux + Bootstrap 5
 
 ## Install dependencies for server
 
