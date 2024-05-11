@@ -1,6 +1,6 @@
 {
   "name": "client",
-  "proxy": "https://socio-sphere-back.vercel.app",
+  "proxy": "https://socio-sphere-server-seven.vercel.app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
