@@ -13,7 +13,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "https://socio-sphere-app.vercel.app",
+    origin: "https://socio-sphere-front.vercel.app",
     credentials: true,
   })
 );
