@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Send from "../../../images/send.svg";
 import LikeButton from "../../LikeButton";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -12,7 +11,7 @@ import {
 import ShareModal from "../../ShareModal";
 import { BASE_URL } from "../../../utils/config";
 
-const CardFooter = ({ post }) => {
+const CardFooter = ({ post, onCommentIconClick, onToggleComments, showComments }) => {
   const [isLike, setIsLike] = useState(false);
   const [loadLike, setLoadLike] = useState(false);
 
@@ -92,11 +91,12 @@ const CardFooter = ({ post }) => {
             handleUnLike={handleUnLike}
           />
 
-          <Link to={`/post/${post && post._id}`} className="text-dark">
-            <i className="far fa-comment" />
-          </Link>
+          <i 
+            className="far fa-comment" 
+            onClick={onCommentIconClick || (() => {})}
+          />
 
-          <img src={Send} alt="Send" onClick={() => setIsShare(!isShare)} />
+          <i className="fas fa-share" onClick={() => setIsShare(!isShare)} />
         </div>
 
         {saved ? (
@@ -104,12 +104,10 @@ const CardFooter = ({ post }) => {
         ) : (
           <i className="far fa-bookmark" onClick={handleSavePost} />
         )}
-
-        
       </div>
 
       <div className="d-flex justify-content-between">
-        <h6 style={{ padding: "0 25px", cursor: "pointer" }}>
+        <h6 style={{ padding: "0 25px 8px 25px", cursor: "default" }}>
           {post && post.likes && post.likes.length === 1 && (
             <i className="far fa-star text-warning mr-1" title="Star" />
           )}
@@ -124,7 +122,14 @@ const CardFooter = ({ post }) => {
           )}
           {post && post.likes && post.likes.length} likes
         </h6>
-        <h6 style={{ padding: "0 25px", cursor: "pointer" }}>
+        <h6 
+          style={{ 
+            padding: "0 25px 8px 25px", 
+            cursor: post && post.comments && post.comments.length > 0 ? "pointer" : "default",
+            opacity: post && post.comments && post.comments.length > 0 ? 1 : 0.7
+          }}
+          onClick={post && post.comments && post.comments.length > 0 ? (onToggleComments || (() => {})) : undefined}
+        >
           {post &&
             post.comments &&
             post.comments.length >= 5 &&
@@ -143,7 +148,10 @@ const CardFooter = ({ post }) => {
           {post && post.comments && post.comments.length >= 15 && (
             <i className="fas fa-star text-warning mr-1" title="Star" />
           )}
-          {post && post.comments && post.comments.length} comments
+          {showComments && post && post.comments && post.comments.length > 0
+            ? "Hide comments" 
+            : `${post && post.comments && post.comments.length} comments`
+          }
         </h6>
       </div>
 

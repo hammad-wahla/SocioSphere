@@ -1,66 +1,1019 @@
-.comment_input{
-    display: flex;
-    align-items: center;
-}
-.comment_input input{
-    background: #f7f7f7;
-    border: none;
-    outline: none;
-    flex: 1;
-    overflow: auto;
-}
-.comment_input .postBtn{
-    background: rgb(53, 52, 52) ;
-    outline: none;
-    color: #fff;
-    font-weight: 600;
-}
-.comment_input .postBtn:hover{
-    background: black ;
-    outline: none;
-    color: #fff;
-    font-weight: 600;
-}
-.comment_input .dropdown-menu{
-    transform: translate3d(-120px, -200px, 0px) !important;
+/* ============ Modern Comments Styles ============ */
+
+/* Comments Toggle Animation */
+.comments-section {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out, opacity 0.3s ease-out;
+  opacity: 0;
 }
 
-/* ---------- Comments ---------- */
-.comment_display{
-    padding: 10px 25px;
-}
-.comment_card .comment_content{
-    background: #eee;
-    padding: 7px;
-    border-radius: 10px;
-    border-top-left-radius: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.comment_card .comment_content .readMore{
-    cursor: pointer;
-    color: crimson;
+.comments-section.show {
+  max-height: 2000px; /* Large enough to contain most comment sections */
+  opacity: 1;
+  transition: max-height 0.4s ease-in, opacity 0.3s ease-in;
 }
 
-.comment_card .comment_content .nav-item{
-    cursor: pointer;
-    opacity: 0;
+/* Comments Container */
+.comments {
+  background: var(--bg-secondary);
+  border-radius: 0 0 20px 20px;
+  margin-top: 10px;
+  padding: 0;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  overflow: visible !important;
+  position: relative;
+  z-index: 1;
+  /* Ensure comments stay below emoji picker */
+  isolation: auto !important;
 }
-.comment_card .comment_content:hover .nav-item{
-    opacity: 1;
+
+/* Scrollable Comments Container */
+.comments-scrollable-container {
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: visible;
+  padding: 0;
+  scroll-behavior: smooth;
 }
-.comment_card .comment_content .dropdown-menu{
-    position: absolute;
-    right: 0;
-    left: inherit;
+
+.comments-scrollable-container::-webkit-scrollbar {
+  width: 6px;
 }
-.comment_card .comment_content .dropdown-item{
-    display: flex;
-    margin: 10px 0;
+
+.comments-scrollable-container::-webkit-scrollbar-track {
+  background: rgba(248, 249, 250, 0.5);
+  border-radius: 3px;
 }
-.comment_card .comment_content textarea{
-    width: 100%;
-    border: none;
-    outline: none;
+
+.comments-scrollable-container::-webkit-scrollbar-thumb {
+  background: rgba(13, 202, 240, 0.3);
+  border-radius: 3px;
+}
+
+.comments-scrollable-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(13, 202, 240, 0.5);
+}
+
+/* Load More Comments Button */
+.comments-load-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  margin: 8px 16px 16px 16px;
+  background: linear-gradient(
+    135deg,
+    rgba(13, 202, 240, 0.1),
+    rgba(13, 202, 240, 0.05)
+  );
+  border: 1px solid rgba(13, 202, 240, 0.2);
+  border-radius: 12px;
+  color: #0dcaf0;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.comments-load-more:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(13, 202, 240, 0.15),
+    rgba(13, 202, 240, 0.08)
+  );
+  border-color: rgba(13, 202, 240, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(13, 202, 240, 0.15);
+}
+
+.comments-load-more i {
+  font-size: 16px;
+  margin-right: 8px;
+}
+
+/* Show/Hide Comments Button */
+.comments-show-hide-button {
+  cursor: pointer;
+  color: #0dcaf0;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 0;
+  text-align: center;
+  transition: all 0.2s ease;
+  background: none;
+  border: none;
+}
+
+.comments-show-hide-button:hover {
+  color: #0bb5d6;
+}
+
+/* Comment Input Section */
+.comment_input {
+  display: flex;
+  align-items: center;
+  padding: 20px 25px;
+  background: var(--bg-secondary);
+  border-radius: 0 0 20px 20px;
+  gap: 15px;
+  max-width: 100%;
+  overflow: hidden; /* Prevent horizontal overflow */
+  box-sizing: border-box;
+}
+
+.comment_input input {
+  background: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  border-radius: 25px;
+  padding: 12px 20px;
+  font-size: 14px;
+  outline: none;
+  flex: 1;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  color: var(--text-primary);
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.comment_input input:focus {
+  border-color: #0dcaf0;
+  box-shadow: 0 0 0 3px rgba(13, 202, 240, 0.1), 0 4px 12px var(--shadow-color);
+  background: var(--bg-primary);
+  transform: translateY(-1px);
+}
+
+.comment_input input::placeholder {
+  color: var(--text-muted);
+}
+
+.comment_input .postBtn {
+  background: linear-gradient(135deg, #0dcaf0, #0bb5d6);
+  border: none;
+  border-radius: 25px;
+  padding: 12px 20px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(13, 202, 240, 0.3);
+  min-width: 70px;
+}
+
+.comment_input .postBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(13, 202, 240, 0.4);
+  background: linear-gradient(135deg, #0bb5d6, #0dcaf0);
+}
+
+.comment_input .postBtn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.comment_input .dropdown-menu {
+  position: absolute !important;
+  top: auto !important;
+  bottom: 100% !important;
+  left: 0 !important;
+  right: auto !important;
+  transform: none !important;
+  margin-bottom: 8px !important;
+  border: none;
+  box-shadow: 0 10px 40px var(--shadow-color);
+  border-radius: 15px;
+  background: var(--bg-primary);
+  backdrop-filter: blur(10px);
+  z-index: 100 !important;
+}
+
+/* ---------- Individual Comments ---------- */
+.comment_display {
+  padding: 8px 25px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: visible;
+  z-index: auto !important;
+}
+
+.comment_display:last-child {
+  border-bottom: none;
+}
+
+.comment_display:hover {
+  background: rgba(13, 202, 240, 0.02);
+}
+
+/* Comment Card */
+.comment_card {
+  margin-bottom: 8px;
+  position: relative;
+  z-index: auto !important;
+}
+
+/* Reply Container - inherit parent background */
+.comment_display .pl-4 {
+  background: transparent;
+}
+
+/* Nested comment displays (replies) should not have extra padding/background */
+.comment_display .comment_display {
+  padding: 0;
+  background: transparent;
+  border-bottom: none;
+}
+
+.comment_display .comment_display:hover {
+  background: transparent;
+}
+
+.comment_card .comment_content {
+  background: var(--bg-primary);
+  padding: 12px 60px 12px 15px;
+  border-radius: 18px;
+  border-top-left-radius: 6px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 10px var(--shadow-color);
+  transition: all 0.3s ease;
+  margin-top: 5px;
+  margin-left: 50px;
+  position: relative;
+  color: var(--text-primary);
+}
+
+.comment_card .comment_content:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(13, 202, 240, 0.1);
+}
+
+.comment_card .comment_content .readMore {
+  cursor: pointer;
+  color: #0dcaf0;
+  font-weight: 500;
+  margin-left: 5px;
+  transition: all 0.2s ease;
+}
+
+.comment_card .comment_content .readMore:hover {
+  color: #0bb5d6;
+  text-decoration: underline;
+}
+
+/* Comment Actions */
+.comment_card .comment_content .nav-item {
+  cursor: pointer;
+  opacity: 1;
+  transition: all 0.3s ease;
+  padding: 6px;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative !important;
+}
+
+.comment_card .comment_content .nav-item:hover {
+  background: rgba(13, 202, 240, 0.1);
+  color: #0dcaf0;
+}
+
+.comment_card .comment_content .dropdown-menu {
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  left: auto !important;
+  transform: none !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 12px !important;
+  background: var(--bg-primary) !important;
+  backdrop-filter: blur(20px) !important;
+  padding: 8px !important;
+  z-index: 500 !important;
+  min-width: 160px !important;
+  margin-top: 5px !important;
+}
+
+.comment_card .comment_content .dropdown-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin: 2px 0 !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
+  color: var(--text-primary) !important;
+  font-size: 14px !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  border: none !important;
+  background: transparent !important;
+  width: 100% !important;
+  text-align: left !important;
+}
+
+.comment_card .comment_content .dropdown-item:hover {
+  background: rgba(13, 202, 240, 0.1) !important;
+  color: #0dcaf0 !important;
+  transform: none !important;
+}
+
+.comment_card .comment_content textarea {
+  width: 100%;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px 15px;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  transition: all 0.3s ease;
+}
+
+.comment_card .comment_content textarea:focus {
+  border-color: #0dcaf0;
+  box-shadow: 0 0 0 3px rgba(13, 202, 240, 0.1);
+}
+
+/* Comment User Info */
+.comment_card .d-flex.text-dark {
+  text-decoration: none;
+  transition: all 0.2s ease;
+  color: var(--text-primary) !important;
+}
+
+.comment_card .d-flex.text-dark:hover {
+  text-decoration: none;
+  color: #0dcaf0 !important;
+}
+
+.comment_card .d-flex.text-dark h6,
+.comment_card .d-flex.align-items-center h6 {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Comment Meta Info */
+.comment_card .comment_content small {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.comment_card .comment_content small.font-weight-bold {
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.comment_card .comment_content small.font-weight-bold:hover {
+  color: #0dcaf0;
+  background: rgba(13, 202, 240, 0.1);
+}
+
+/* Reply Comments */
+.comment_card .pl-4 {
+  padding-left: 2rem !important;
+  margin-top: 8px;
+}
+
+.comment_card .pl-4 .comment_card .comment_content {
+  background: var(--bg-primary);
+}
+
+/* Show/Hide Comments Links */
+.comments .p-2.border-top {
+  padding: 10px 25px !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+  text-align: center;
+  background: linear-gradient(
+    135deg,
+    rgba(248, 249, 250, 0.6),
+    rgba(255, 255, 255, 0.8)
+  );
+  cursor: pointer;
+  color: #0dcaf0 !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.comments .p-2.border-top:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(13, 202, 240, 0.05),
+    rgba(248, 249, 250, 0.8)
+  );
+  color: #0bb5d6 !important;
+}
+
+/* Fix for duplicate "See more comments" - hide all but the last one */
+.comments .p-2.border-top + .p-2.border-top {
+  display: none !important;
+}
+
+/* Also target the old style that might be causing duplicates */
+.comments > div[style*="color: crimson"] {
+  display: none !important;
+}
+
+.comments div[style*="color: crimson"]:last-of-type {
+  display: block !important;
+}
+
+/* Comment Actions Row */
+.comment_card .d-flex.align-items-center.mx-2 {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  gap: 4px;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  display: flex;
+  align-items: center;
+  background: transparent !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  z-index: 1 !important;
+  will-change: auto !important;
+  contain: none !important;
+}
+
+/* Comment Input Container Enhancement */
+.card-footer.comment_input {
+  border-top: 1px solid var(--border-color) !important;
+  background: var(--bg-secondary) !important;
+  backdrop-filter: blur(10px);
+}
+
+/* Tagged User in Comment Input */
+.comment_input a {
+  color: #0dcaf0;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.comment_input a:hover {
+  color: #0bb5d6;
+  text-decoration: none;
+}
+
+/* New Comment Input Bubble Styling */
+.comment_input_bubble {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.input_comment_content {
+  background: var(--bg-primary) !important;
+  padding: 12px 16px !important;
+  border-radius: 20px !important;
+  border-top-left-radius: 6px !important;
+  border: 2px solid var(--border-color) !important;
+  box-shadow: 0 4px 20px var(--shadow-color) !important;
+  transition: all 0.3s ease !important;
+  margin-top: 8px !important;
+  margin-left: 50px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  overflow: visible !important;
+  position: relative !important;
+  z-index: auto !important;
+}
+
+.input_comment_content:hover {
+  box-shadow: 0 6px 25px var(--shadow-color) !important;
+  border-color: rgba(13, 202, 240, 0.3) !important;
+  z-index: 1 !important;
+}
+
+/* Dark mode specific enhancements */
+[data-theme="dark"] .input_comment_content {
+  background: var(--bg-secondary) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="dark"] .comment_text_input {
+  background: var(--bg-primary) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme="dark"] .comment_text_input:focus {
+  border-color: #0dcaf0 !important;
+  background: var(--bg-primary) !important;
+}
+
+.comment_actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  position: relative;
+  overflow: visible !important;
+}
+
+.comment_actions_right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Horizontal Input Row Layout */
+.comment_input_row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+/* Proper Input Field Styling */
+.comment_text_input {
+  flex: 1 !important;
+  background: var(--bg-primary) !important;
+  border: 2px solid var(--border-color) !important;
+  border-radius: 25px !important;
+  padding: 12px 20px !important;
+  font-size: 15px !important;
+  outline: none !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 8px var(--shadow-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.comment_text_input:focus {
+  border-color: #0dcaf0 !important;
+  box-shadow: 0 2px 8px var(--shadow-color),
+    0 0 0 3px rgba(13, 202, 240, 0.2) !important;
+  background: var(--bg-primary) !important;
+}
+
+.comment_text_input::placeholder {
+  color: var(--text-muted) !important;
+  font-size: 15px !important;
+}
+
+.input_comment_content .postBtn {
+  background: linear-gradient(135deg, #0dcaf0, #0bb5d6) !important;
+  border: none !important;
+  border-radius: 25px !important;
+  padding: 12px 24px !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(13, 202, 240, 0.3) !important;
+  min-width: 80px !important;
+  margin: 0 !important;
+  height: auto !important;
+  white-space: nowrap !important;
+}
+
+.input_comment_content .postBtn:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(13, 202, 240, 0.4) !important;
+  background: linear-gradient(135deg, #0bb5d6, #0dcaf0) !important;
+  transform: translateY(-1px) !important;
+  z-index: 1 !important;
+}
+
+.input_comment_content .postBtn:disabled {
+  background: var(--text-muted) !important;
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Reply Indicator */
+.reply-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: linear-gradient(
+    135deg,
+    rgba(13, 202, 240, 0.08),
+    rgba(13, 202, 240, 0.04)
+  );
+  border-radius: 12px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(13, 202, 240, 0.2);
+}
+
+.reply-indicator button:hover {
+  background: rgba(13, 202, 240, 0.1) !important;
+  border-radius: 50% !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .comment_input {
+    padding: 15px;
+    gap: 10px;
+  }
+
+  .comment_input input {
+    padding: 10px 15px;
+    font-size: 14px;
+    min-width: 0; /* Allow shrinking */
+  }
+
+  .comment_input .postBtn {
+    padding: 10px 15px;
+    min-width: 60px;
+    font-size: 14px;
+  }
+
+  /* Prevent overflow on tablets */
+  .comment_input_row {
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .comment_display {
+    padding: 15px 20px;
+  }
+
+  .comment_card .comment_content {
+    padding: 12px 15px;
+    margin-left: 40px;
+  }
+
+  .comment_card .pl-4 {
+    padding-left: 1.5rem !important;
+  }
+
+  .input_comment_content {
+    margin-left: 40px !important;
+    padding: 12px 15px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .comment_input {
+    padding: 10px;
+    gap: 8px;
+    flex-wrap: wrap; /* Allow wrapping on very small screens */
+  }
+
+  .comment_input input {
+    min-width: 0; /* Allow input to shrink */
+    flex: 1 1 auto;
+    padding: 8px 12px;
+    font-size: 14px; /* Keep readable */
+  }
+
+  .comment_input .postBtn {
+    padding: 8px 12px;
+    min-width: 50px;
+    font-size: 13px;
+  }
+
+  /* Ensure comment input row stays inside container */
+  .comment_input_row {
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  /* Make input more flexible */
+  .comment_text_input {
+    min-width: 0 !important;
+    flex: 1 1 150px !important; /* Shrink but prefer 150px */
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+  }
+
+  /* Adjust action buttons */
+  .comment_actions {
+    flex-wrap: nowrap !important;
+    gap: 5px !important;
+  }
+
+  .comment_actions_right {
+    gap: 5px !important;
+  }
+
+  /* Smaller buttons on mobile */
+  .input_comment_content .postBtn {
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+    min-width: 50px !important;
+  }
+
+  .comment_display {
+    padding: 12px 15px;
+  }
+
+  .comment_card .comment_content {
+    margin-left: 35px;
+    padding: 10px 12px;
+  }
+
+  .input_comment_content {
+    margin-left: 35px !important;
+    padding: 8px !important;
+    margin-right: 8px !important;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+  .comment_input {
+    padding: 8px;
+    gap: 5px;
+  }
+
+  .comment_input input {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .comment_input .postBtn {
+    padding: 8px 10px;
+    font-size: 12px;
+    min-width: 45px;
+  }
+
+  /* Stack elements vertically if needed */
+  .comment_input_row {
+    flex-wrap: wrap !important;
+  }
+
+  .comment_text_input {
+    flex: 1 1 100% !important; /* Full width on very small screens */
+    margin-bottom: 8px !important;
+  }
+
+  .comment_actions {
+    width: 100% !important;
+    justify-content: space-between !important;
+  }
+
+  .input_comment_content {
+    margin-left: 30px !important;
+    padding: 5px !important;
+  }
+}
+
+/* Like Button and Actions Styling */
+.comment_card .d-flex.align-items-center.mx-2 .btn {
+  border-radius: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: none !important;
+  background: transparent !important;
+  color: #6c757d !important;
+  transition: color 0.2s ease !important;
+}
+
+.comment_card .d-flex.align-items-center.mx-2 .btn:hover {
+  background: transparent !important;
+  color: #0dcaf0 !important;
+  transform: none !important;
+}
+
+.comment_card .d-flex.align-items-center.mx-2 .fa-heart {
+  font-size: 14px !important;
+}
+
+.comment_card .d-flex.align-items-center.mx-2 .fa-heart.text-danger {
+  color: #dc3545 !important;
+}
+
+/* Fix emoji picker z-index conflicts in comments */
+.comments .emoji-picker-container,
+.comment_card .emoji-picker-container,
+.comment_display .emoji-picker-container,
+.comment_content .emoji-picker-container,
+.comment_input .emoji-picker-container,
+.input_comment_content .emoji-picker-container {
+  position: relative !important;
+  z-index: 100000 !important;
+  isolation: isolate !important;
+}
+
+.comments .emoji-picker-wrapper,
+.comment_card .emoji-picker-wrapper,
+.comment_display .emoji-picker-wrapper,
+.comment_content .emoji-picker-wrapper,
+.comment_input .emoji-picker-wrapper,
+.input_comment_content .emoji-picker-wrapper {
+  position: fixed !important;
+  z-index: 999999 !important;
+  isolation: isolate !important;
+  pointer-events: auto !important;
+}
+
+/* Ensure comment elements don't create stacking contexts that interfere */
+.comment_card,
+.comment_display,
+.comment_content {
+  isolation: auto !important;
+  transform-style: flat !important;
+}
+
+/* Prevent dropdown menus from interfering with emoji picker */
+.comment_card .dropdown-menu {
+  z-index: 99998 !important;
+}
+
+/* Old emoji styles removed - using emoji-picker-react now */
+
+/* Force all comment elements to stay below emoji picker */
+.comments *,
+.comment_card *,
+.comment_display *,
+.comment_content *,
+.input_comment_content *,
+.comment_input * {
+  z-index: auto !important;
+  /* Prevent any element from creating new stacking contexts */
+  will-change: auto !important;
+  contain: none !important;
+}
+
+/* Specific override for elements that must have transforms */
+.comments-load-more:hover,
+.comment_input .postBtn:hover:not(:disabled),
+.comment_card .comment_content:hover,
+.comment_card .comment_content .readMore:hover,
+.comment_card .comment_content .nav-item:hover,
+.comment_card .comment_content .dropdown-item:hover,
+.comment_card .comment_content small.font-weight-bold:hover,
+.comments .p-2.border-top:hover,
+.comment_card .d-flex.align-items-center.mx-2 .btn:hover {
+  z-index: 1 !important;
+  /* Reset any transforms that create stacking contexts */
+  transform: none !important;
+}
+
+/* Exception: Allow small transforms but force z-index */
+.comments-load-more:hover {
+  transform: translateY(-1px) !important;
+  z-index: 1 !important;
+}
+
+.comment_input .postBtn:hover:not(:disabled) {
+  transform: translateY(-2px) !important;
+  z-index: 1 !important;
+}
+
+.comment_card .comment_content:hover {
+  transform: translateY(-1px) !important;
+  z-index: 1 !important;
+}
+
+/* Old emoji styles removed - using emoji-picker-react now */
+
+/* ULTIMATE FIX: Force emoji picker above ALL comment elements */
+.comments *,
+.comment_card *,
+.comment_display *,
+.comment_content *,
+.input_comment_content *,
+.comment_input *,
+.comments,
+.comment_card,
+.comment_display,
+.comment_content,
+.input_comment_content,
+.comment_input {
+  /* Force ALL comment-related elements to have low z-index */
+  z-index: auto !important;
+  /* Prevent any element from creating new stacking contexts */
+  will-change: auto !important;
+  contain: none !important;
+  /* Force isolation to prevent stacking context issues */
+  isolation: auto !important;
+  /* Remove any transforms that could create stacking contexts */
+  transform-style: flat !important;
+}
+
+/* Specific ultra-high z-index for emoji picker in comment areas */
+.comments .emoji-picker-container,
+.comment_card .emoji-picker-container,
+.comment_display .emoji-picker-container,
+.comment_content .emoji-picker-container,
+.comment_input .emoji-picker-container,
+.input_comment_content .emoji-picker-container {
+  position: relative !important;
+  z-index: 99999999 !important;
+  isolation: isolate !important;
+}
+
+.comments .emoji-picker-wrapper,
+.comment_card .emoji-picker-wrapper,
+.comment_display .emoji-picker-wrapper,
+.comment_content .emoji-picker-wrapper,
+.comment_input .emoji-picker-wrapper,
+.input_comment_content .emoji-picker-wrapper {
+  position: absolute !important;
+  bottom: 100% !important;
+  right: 0 !important;
+  left: auto !important;
+  z-index: 99999999 !important;
+  margin-bottom: 10px !important;
+  isolation: isolate !important;
+  pointer-events: auto !important;
+}
+
+/* Emergency override for any remaining stacking contexts */
+.comments .emoji-picker-wrapper > *,
+.comment_card .emoji-picker-wrapper > *,
+.comment_display .emoji-picker-wrapper > *,
+.comment_content .emoji-picker-wrapper > *,
+.comment_input .emoji-picker-wrapper > *,
+.input_comment_content .emoji-picker-wrapper > * {
+  z-index: 99999999 !important;
+  position: relative !important;
+}
+
+/* Ensure dropdown menus stay well below emoji picker */
+.comment_card .dropdown-menu,
+.comment_content .dropdown-menu,
+.comment_input .dropdown-menu {
+  z-index: 50 !important;
+}
+
+/* Force any positioned comment elements to stay low */
+.comments [style*="position"],
+.comment_card [style*="position"],
+.comment_display [style*="position"],
+.comment_content [style*="position"],
+.input_comment_content [style*="position"],
+.comment_input [style*="position"] {
+  z-index: 10 !important;
+}
+
+/* Remove all transform-based stacking contexts from comments except dropdowns */
+.comments [style*="transform"]:not(.dropdown-menu):not(.dropdown-item),
+.comment_card [style*="transform"]:not(.dropdown-menu):not(.dropdown-item),
+.comment_display [style*="transform"]:not(.dropdown-menu):not(.dropdown-item),
+.comment_content [style*="transform"]:not(.dropdown-menu):not(.dropdown-item),
+.input_comment_content
+  [style*="transform"]:not(.dropdown-menu):not(.dropdown-item),
+.comment_input [style*="transform"]:not(.dropdown-menu):not(.dropdown-item) {
+  transform: none !important;
+  z-index: auto !important;
+}
+
+/* Allow only minimal hover effects */
+.comment_input .postBtn:hover:not(:disabled),
+.comment_card .comment_content:hover,
+.comment_card .d-flex.align-items-center.mx-2 .btn:hover {
+  /* Keep hover effects but prevent stacking contexts */
+  z-index: 1 !important;
+  transform: none !important;
+}
+
+/* Exception for dropdown menus and items */
+.comment_card .comment_content .dropdown-menu,
+.comment_card .comment_content .dropdown-item,
+.comment_card .comment_content .nav-item.dropdown-toggle {
+  position: relative !important;
+  z-index: 500 !important;
+}
+
+/* Specific override for comment action buttons */
+.comment_card .d-flex.align-items-center.mx-2 {
+  /* Allow the positioning transform but keep z-index low */
+  z-index: 1 !important;
+  transform: translateY(-50%) !important;
+}
+
+/* Ensure comment elements don't create stacking contexts that interfere */
+.comment_card,
+.comment_display,
+.comment_content {
+  isolation: auto !important;
+  transform-style: flat !important;
 }

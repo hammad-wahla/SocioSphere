@@ -1,19 +1,22 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { getSuggestions } from "../../redux/actions/suggestionsAction";
 
 import UserCard from "../UserCard";
+import LoadingSpinner from "../LoadingSpinner";
 import FollowBtn from "../FollowBtn";
-import LoadIcon from "../../images/loading.gif";
-import { getSuggestions } from "../../redux/actions/suggestionsAction";
 
 const RightSideBar = () => {
   const { auth, suggestions } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   return (
-    <div className=" mt-2 rightSide ">
-      <div className="d-flex justify-content-between align-items-center my-2">
-        <h5 className="text-info">Suggestions for you</h5>
+    <div className="mt-2 LeftSide">
+      <div className="d-flex justify-content-between align-items-center">
+        <h5>
+          <i className="fas fa-users mr-2 text-info"></i>
+          Suggestions for you
+        </h5>
         {!suggestions.loading && (
           <i
             className="fas fa-redo"
@@ -22,23 +25,33 @@ const RightSideBar = () => {
           />
         )}
       </div>
-
-      {suggestions.loading ? (
-        <img src={LoadIcon} alt="loading" className="d-block mx-auto my-4" />
-      ) : (
-        <div className="suggestions">
-          {suggestions.users.map((user) => (
-            <UserCard key={user._id} user={user}>
-              <FollowBtn user={user} />
-            </UserCard>
-          ))}
-        </div>
-      )}
-
-      <div style={{ opacity: 0.5 }} className="my-2">
-        <small style={{ fontFamily: "inherit" }}>
-          &copy; 2024 SocioSphere form HAMMAD KHALID
-        </small>
+      <hr />
+      {/* Display suggestions */}
+      <div className="connections-list">
+        {suggestions.loading ? (
+          <LoadingSpinner
+            type="dots"
+            text="Finding suggestions..."
+            size="small"
+          />
+        ) : suggestions.users && suggestions.users.length > 0 ? (
+          suggestions.users.map((user) => (
+            <div key={user._id} className="user-card">
+              <UserCard user={user} />
+              <div className="follow-icon-corner">
+                <FollowBtn user={user} iconOnly={true} />
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-3">
+            <i className="fas fa-user-plus fa-2x text-muted mb-3"></i>
+            <p className="text-muted mb-1">No suggestions available</p>
+            <small className="text-muted">
+              Try following more people to get better suggestions
+            </small>
+          </div>
+        )}
       </div>
     </div>
   );

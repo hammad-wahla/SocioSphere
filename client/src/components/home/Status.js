@@ -18,7 +18,7 @@ const Status = () => {
         className="statusBtn flex-fill px-3"
         onClick={() => dispatch({ type: GLOBALTYPES.STATUS, payload: true })}
       >
-        What are you thinking?
+        Share your thoughts, photos, or what's happening...
       </button>
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PostThumb from "../PostThumb";
-import LoadIcon from "../../images/loading.gif";
+import LoadingSpinner from "../LoadingSpinner";
 import LoadMoreBtn from "../LoadMoreBtn";
 import { getDataAPI } from "../../utils/fetchData";
 import { PROFILE_TYPES } from "../../redux/actions/profileAction";
@@ -33,10 +33,18 @@ const Posts = ({ auth, id, dispatch, profile }) => {
   };
 
   return (
-    <div className="m-auto" style={{ width: "90%" }}>
+    <div className="profile_posts_container">
       <PostThumb posts={posts} result={result} />
 
-      {load && <img src={LoadIcon} alt="loading" className="d-block mx-auto" />}
+      {load && (
+        <div className="profile_loading">
+          <LoadingSpinner
+            type="spinner"
+            text="Loading more posts..."
+            size="small"
+          />
+        </div>
+      )}
 
       <LoadMoreBtn
         result={result}

@@ -13,8 +13,8 @@ import {
   loadMoreMessages,
   deleteConversation,
 } from "../../redux/actions/messageAction";
-import LoadIcon from "../../images/loading.gif";
-import SongUploadPopup from "./SongUploadPopup";
+import LoadingSpinner from "../LoadingSpinner";
+import ConfirmModal from "../ConfirmModal";
 
 const RightSide = () => {
   const { auth, message, theme, socket, peer } = useSelector((state) => state);
@@ -25,6 +25,8 @@ const RightSide = () => {
   const [text, setText] = useState("");
   const [media, setMedia] = useState([]);
   const [loadMedia, setLoadMedia] = useState(false);
+  const [showDeleteConversationModal, setShowDeleteConversationModal] =
+    useState(false);
 
   const refDisplay = useRef();
   const pageEnd = useRef();
@@ -148,13 +150,20 @@ const RightSide = () => {
   }, [isLoadMore]);
 
   const handleDeleteConversation = () => {
-    if (window.confirm("Do you want to delete?")) {
-      dispatch(deleteConversation({ auth, id }));
-      return history.push("/message");
-    }
+    setShowDeleteConversationModal(true);
   };
 
-  // Call
+  const confirmDeleteConversation = () => {
+    dispatch(deleteConversation({ auth, id }));
+    setShowDeleteConversationModal(false);
+    history.push("/message");
+  };
+
+  const cancelDeleteConversation = () => {
+    setShowDeleteConversationModal(false);
+  };
+
+  // Call functions
   const caller = ({ video }) => {
     const { _id, avatar, username, fullname } = user;
 
@@ -197,43 +206,58 @@ const RightSide = () => {
   };
 
   return (
-    <>
-      <div className="message_header" style={{ cursor: "pointer" }}>
+    <div className="chat-container-modern">
+      {/* Modern Chat Header */}
+      <div className="chat-header-modern">
         {user.length !== 0 && (
-          <UserCard user={user}>
-            <div>
-              <i className="fas fa-phone-alt" onClick={handleAudioCall} />
-
-              <i className="fas fa-video mx-3" onClick={handleVideoCall} />
-
-              <i
-                className="fas fa-trash text-danger"
-                onClick={handleDeleteConversation}
-              />
+          <div className="chat-header-content">
+            <div className="chat-user-info">
+              <UserCard user={user} />
             </div>
-          </UserCard>
+            <div className="chat-actions">
+              <button
+                className="chat-action-btn audio-call"
+                onClick={handleAudioCall}
+                title="Audio Call"
+              >
+                <i className="fas fa-phone-alt"></i>
+              </button>
+              <button
+                className="chat-action-btn video-call"
+                onClick={handleVideoCall}
+                title="Video Call"
+              >
+                <i className="fas fa-video"></i>
+              </button>
+              <button
+                className="chat-action-btn delete-chat"
+                onClick={handleDeleteConversation}
+                title="Delete Conversation"
+              >
+                <i className="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
         )}
       </div>
 
-      <div
-        className="chat_container"
-        style={{ height: media.length > 0 ? "calc(100% - 180px)" : "" }}
-      >
-        <div className="chat_display" ref={refDisplay}>
-          <button style={{ marginTop: "-25px", opacity: 0 }} ref={pageEnd}>
+      {/* Modern Chat Messages Area */}
+      <div className="chat-messages-container">
+        <div className="chat-messages-scroll" ref={refDisplay}>
+          <button className="load-more-trigger" ref={pageEnd}>
             Load more
           </button>
 
           {data.map((msg, index) => (
-            <div key={index}>
+            <div key={index} className="message-wrapper">
               {msg.sender !== auth.user._id && (
-                <div className="chat_row other_message">
+                <div className="message-row received">
                   <MsgDisplay user={user} msg={msg} theme={theme} />
                 </div>
               )}
 
               {msg.sender === auth.user._id && (
-                <div className="chat_row you_message">
+                <div className="message-row sent">
                   <MsgDisplay
                     user={auth.user}
                     msg={msg}
@@ -246,67 +270,91 @@ const RightSide = () => {
           ))}
 
           {loadMedia && (
-            <div className="chat_row you_message">
-              <img src={LoadIcon} alt="loading" />
+            <div className="message-row sent">
+              <div className="message-loading">
+                <LoadingSpinner type="dots" size="small" />
+                <span className="loading-text">Sending...</span>
+              </div>
             </div>
           )}
         </div>
       </div>
 
-      <div
-        className="show_media"
-        style={{ display: media.length > 0 ? "grid" : "none" }}
-      >
-        {media.map((item, index) => (
-          <div key={index} id="file_media">
-            {item.type.match(/video/i)
-              ? videoShow(URL.createObjectURL(item), theme)
-              : imageShow(URL.createObjectURL(item), theme)}
-            <span onClick={() => handleDeleteMedia(index)}>&times;</span>
+      {/* Media Preview Area */}
+      {media.length > 0 && (
+        <div className="media-preview-area">
+          <div className="media-preview-grid">
+            {media.map((item, index) => (
+              <div key={index} className="media-preview-item">
+                <div className="media-content">
+                  {item.type.match(/video/i)
+                    ? videoShow(URL.createObjectURL(item))
+                    : imageShow(URL.createObjectURL(item))}
+                </div>
+                <button
+                  className="media-remove-btn"
+                  onClick={() => handleDeleteMedia(index)}
+                  title="Remove"
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
+      )}
+
+      {/* Modern Chat Input */}
+      <div className="chat-input-modern">
+        <form className="chat-form" onSubmit={handleSubmit}>
+          <div className="input-wrapper">
+            <input
+              type="text"
+              placeholder="Type a message..."
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              className="message-input"
+            />
+
+            <div className="input-actions">
+              <Icons setContent={setText} content={text} />
+
+              <div className="file-upload-btn">
+                <i className="fas fa-paperclip"></i>
+                <input
+                  type="file"
+                  name="file"
+                  id="file"
+                  multiple
+                  accept="image/*,video/*"
+                  onChange={handleChangeMedia}
+                />
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="send-btn"
+            disabled={!text.trim() && media.length === 0}
+          >
+            <i className="fas fa-paper-plane"></i>
+          </button>
+        </form>
       </div>
 
-      <form className="chat_input" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder=""
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          style={{
-            filter: theme ? "invert(1)" : "invert(0)",
-            background: theme ? "#040404" : "",
-            color: theme ? "white" : "",
-          }}
-        />
-
-        <Icons setContent={setText} content={text} theme={theme} />
-
-        <div className="file_upload">
-          <i className="fas fa-image text-danger" />
-          <input
-            type="file"
-            name="file"
-            id="file"
-            multiple
-            accept="image/*,video/*"
-            onChange={handleChangeMedia}
-          />
-        </div>
-
-        <div>
-          <SongUploadPopup />
-        </div>
-
-        <button
-          type="submit"
-          className="material-icons"
-          disabled={text || media.length > 0 ? false : true}
-        >
-          near_me
-        </button>
-      </form>
-    </>
+      {/* Delete Conversation Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showDeleteConversationModal}
+        onClose={cancelDeleteConversation}
+        onConfirm={confirmDeleteConversation}
+        title="Delete Conversation"
+        message="Do you want to delete this conversation? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        type="danger"
+      />
+    </div>
   );
 };
 

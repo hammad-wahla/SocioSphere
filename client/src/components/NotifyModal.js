@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import NoNotice from "../images/notice.png";
 import { Link } from "react-router-dom";
 import Avatar from "./Avatar";
 import moment from "moment";
@@ -9,116 +8,201 @@ import {
   NOTIFY_TYPES,
   deleteAllNotifies,
 } from "../redux/actions/notifyAction";
+import { showConfirmDialog, showToast } from "../utils/confirmDialog";
 
-const NotifyModal = () => {
+const NotifyModal = ({ onNotificationClick }) => {
   const { auth, notify } = useSelector((state) => state);
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
   const handleIsRead = (msg) => {
     dispatch(isReadNotify({ msg, auth }));
+    // Close dropdown after clicking notification
+    if (onNotificationClick) {
+      setTimeout(() => onNotificationClick(), 100);
+    }
   };
 
   const handleSound = () => {
     dispatch({ type: NOTIFY_TYPES.UPDATE_SOUND, payload: !notify.sound });
   };
 
-  const handleDeleteAll = () => {
-    const newArr = notify.data.filter((item) => item.isRead === false);
-    if (newArr.length === 0) return dispatch(deleteAllNotifies(auth.token));
+  const handleDeleteAll = async () => {
+    const unreadCount = notify.data.filter((item) => !item.isRead).length;
 
-    if (
-      window.confirm(
-        `You have ${newArr.length} unread notices. Are you sure you want to delete all?`
-      )
-    ) {
-      return dispatch(deleteAllNotifies(auth.token));
-    }
+    if (notify.data.length === 0) return;
+
+    const confirmMessage =
+      unreadCount > 0
+        ? `You have ${unreadCount} unread notification${
+            unreadCount > 1 ? "s" : ""
+          }. Are you sure you want to delete all notifications?`
+        : "Are you sure you want to delete all notifications?";
+
+    showConfirmDialog(dispatch, {
+      title: "Delete All Notifications",
+      message: confirmMessage,
+      confirmText: "Delete All",
+      cancelText: "Cancel",
+      variant: "danger",
+      onConfirm: async () => {
+        setLoading(true);
+        try {
+          await dispatch(deleteAllNotifies(auth.token));
+          showToast(dispatch, {
+            type: "success",
+            message: "All notifications deleted successfully!",
+          });
+        } catch (error) {
+          console.error("Error deleting notifications:", error);
+          showToast(dispatch, {
+            type: "error",
+            message: "Failed to delete notifications",
+          });
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
   };
 
-  const [isSmallScreen, setIsSmallScreen] = React.useState(false);
-
-  const handleResize = () => {
-    setIsSmallScreen(window.innerWidth <= 768);
+  const getNotificationIcon = (msg) => {
+    if (msg.text.includes("liked")) return "fas fa-heart text-danger";
+    if (msg.text.includes("commented")) return "fas fa-comment text-primary";
+    if (msg.text.includes("shared")) return "fas fa-share text-success";
+    if (msg.text.includes("follow")) return "fas fa-user-plus text-info";
+    return "fas fa-bell text-secondary";
   };
 
-  React.useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const formatTimeAgo = (date) => {
+    const now = moment();
+    const notificationTime = moment(date);
+    const diffInHours = now.diff(notificationTime, "hours");
 
-  const avatarSize = isSmallScreen ? "medium-avatar" : "big-avatar";
+    if (diffInHours < 1) return moment(date).fromNow();
+    if (diffInHours < 24) return `${diffInHours}h ago`;
+    if (diffInHours < 168) return `${Math.floor(diffInHours / 24)}d ago`;
+    return moment(date).format("MMM DD");
+  };
+
+  const unreadCount = notify.data.filter((item) => !item.isRead).length;
 
   return (
-    <div className="notify-modal">
-      <div className="d-flex justify-content-between align-items-center px-3">
-        <p className="mb-0 notify-text">Notification</p>
-        {notify.sound ? (
-          <i
-            className="fas fa-bell text-danger"
-            style={{ fontSize: "1.2rem", cursor: "pointer" }}
+    <div className="modern-notify-modal">
+      {/* Header */}
+      <div className="notify-header">
+        <div className="notify-title">
+          <h6 className="mb-0">
+            <i className="fas fa-bell me-2"></i>
+            Notifications
+            {unreadCount > 0 && (
+              <span className="unread-badge ms-2">{unreadCount}</span>
+            )}
+          </h6>
+        </div>
+        <div className="notify-controls">
+          <button
+            className={`sound-btn ${notify.sound ? "active" : ""}`}
             onClick={handleSound}
-          />
+            title={
+              notify.sound ? "Turn off notifications" : "Turn on notifications"
+            }
+          >
+            <i
+              className={`fas ${notify.sound ? "fa-bell" : "fa-bell-slash"}`}
+            ></i>
+          </button>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="notify-content">
+        {loading ? (
+          <div className="notify-loading">
+            <div className="loading-spinner"></div>
+            <p>Loading...</p>
+          </div>
+        ) : notify.data.length === 0 ? (
+          <div className="notify-empty">
+            <div className="empty-icon">
+              <i className="fas fa-bell-slash"></i>
+            </div>
+            <h6>No notifications yet</h6>
+            <p>When you get notifications, they'll show up here</p>
+          </div>
         ) : (
-          <i
-            className="fas fa-bell-slash text-danger"
-            style={{ fontSize: "1.2rem", cursor: "pointer" }}
-            onClick={handleSound}
-          />
+          <div className="notify-list">
+            {notify.data.map((msg, index) => (
+              <div
+                key={index}
+                className={`notify-item ${!msg.isRead ? "unread" : ""}`}
+              >
+                <Link
+                  to={msg.url}
+                  className="notify-link"
+                  onClick={() => handleIsRead(msg)}
+                >
+                  <div className="notify-avatar">
+                    <Avatar src={msg.user.avatar} size="medium-avatar" />
+                    <div className="notify-type-icon">
+                      <i className={getNotificationIcon(msg)}></i>
+                    </div>
+                  </div>
+
+                  <div className="notify-body">
+                    <div className="notify-main">
+                      <span className="notify-username">
+                        {msg.user.username}
+                      </span>
+                      <span className="notify-action">{msg.text}</span>
+                      {!msg.isRead && <div className="unread-dot"></div>}
+                    </div>
+
+                    {msg.content && (
+                      <p className="notify-content-preview">
+                        "{msg.content.slice(0, 50)}..."
+                      </p>
+                    )}
+
+                    <div className="notify-time">
+                      {formatTimeAgo(msg.createdAt)}
+                    </div>
+                  </div>
+
+                  {msg.image && (
+                    <div className="notify-media">
+                      {msg.image.match(/video/i) ? (
+                        <video src={msg.image} className="notify-video" muted />
+                      ) : (
+                        <img
+                          src={msg.image}
+                          alt="notification media"
+                          className="notify-image"
+                        />
+                      )}
+                    </div>
+                  )}
+                </Link>
+              </div>
+            ))}
+          </div>
         )}
       </div>
-      <hr className="mt-0" />
 
-      {notify.data.length === 0 && (
-        <img src={NoNotice} alt="NoNotice" className="w-100" />
+      {/* Footer */}
+      {notify.data.length > 0 && (
+        <div className="notify-footer">
+          <button
+            className="delete-all-btn"
+            onClick={handleDeleteAll}
+            disabled={loading}
+          >
+            <i className="fas fa-trash-alt me-2"></i>
+            Clear All
+            {loading && <i className="fas fa-spinner fa-spin ms-2"></i>}
+          </button>
+        </div>
       )}
-
-      <div className="notify-messages">
-        {notify.data.map((msg, index) => (
-          <div key={index} className="px-2 mb-3 ">
-            <Link
-              to={`${msg.url}`}
-              className="d-flex text-dark align-items-center"
-              onClick={() => handleIsRead(msg)}
-            >
-              <Avatar src={msg.user.avatar} size={avatarSize} />
-
-              <div className="mx-1 flex-fill ">
-                <div className="notify-msg">
-                  <strong className="mr-1">{msg.user.username}</strong>
-                  <span>{msg.text}</span>
-                </div>
-                {msg.content && (
-                  <small className="notify-msg2">
-                    {msg.content.slice(0, 20)}...
-                  </small>
-                )}
-              </div>
-
-              {msg.image && (
-                <div style={{ width: "30px" }} className="avatar-div">
-                  {msg.image.match(/video/i) ? (
-                    <video src={msg.image} width="100%" />
-                  ) : (
-                    <Avatar src={msg.image} size="medium-avatar" />
-                  )}
-                </div>
-              )}
-            </Link>
-            <small className="text-muted d-flex justify-content-between px-2">
-              {moment(msg.createdAt).fromNow()}
-              {!msg.isRead && <i className="fas fa-circle text-primary" />}
-            </small>
-          </div>
-        ))}
-      </div>
-
-      <hr className="my-1" />
-      <div
-        className="text-right delete-all text-danger mr-2"
-        onClick={handleDeleteAll}
-      >
-        Delete All
-      </div>
     </div>
   );
 };

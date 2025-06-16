@@ -1,5 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import "./styles/confirm-modal.css";
+import "./styles/follow-request.css";
+import "./styles/unified-buttons.css";
+import "./styles/bottom-nav.css";
 
 import PageRender from "./customRouter/PageRender";
 import PrivateRouter from "./customRouter/PrivateRouter";
@@ -7,10 +11,13 @@ import PrivateRouter from "./customRouter/PrivateRouter";
 import Home from "./pages/home";
 import Login from "./pages/login";
 import Register from "./pages/register";
+import VerifyEmail from "./pages/verifyEmail";
 
 import Alert from "./components/alert/Alert";
 import Header from "./components/header/Header";
+import BottomNav from "./components/BottomNav";
 import StatusModal from "./components/StatusModal";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 import { useSelector, useDispatch } from "react-redux";
 import { refreshToken } from "./redux/actions/authAction";
@@ -26,11 +33,22 @@ import CallModal from "./components/message/CallModal";
 import Peer from "peerjs";
 
 function App() {
-  const { auth, status, modal, call } = useSelector((state) => state);
+  const { auth, status, modal, call, theme } = useSelector((state) => state);
   const dispatch = useDispatch();
+  const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
-    dispatch(refreshToken());
+    const loadAuth = async () => {
+      await dispatch(refreshToken());
+      setAuthLoading(false);
+    };
+    
+    const firstLogin = localStorage.getItem("firstLogin");
+    if (firstLogin) {
+      loadAuth();
+    } else {
+      setAuthLoading(false);
+    }
 
     const socket = io();
     dispatch({ type: GLOBALTYPES.SOCKET, payload: socket });
@@ -47,15 +65,24 @@ function App() {
 
   useEffect(() => {
     if (!("Notification" in window)) {
-      alert("This browser does not support desktop notification");
+      dispatch({
+        type: GLOBALTYPES.ALERT,
+        payload: {
+          error: "This browser does not support desktop notifications",
+        },
+      });
     } else if (Notification.permission === "granted") {
     } else if (Notification.permission !== "denied") {
       Notification.requestPermission().then(function (permission) {
         if (permission === "granted") {
+          dispatch({
+            type: GLOBALTYPES.ALERT,
+            payload: { success: "Desktop notifications enabled!" },
+          });
         }
       });
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     const newPeer = new Peer(undefined, {
@@ -66,12 +93,31 @@ function App() {
     dispatch({ type: GLOBALTYPES.PEER, payload: newPeer });
   }, [dispatch]);
 
+  // Show loading spinner during initial auth check
+  if (authLoading) {
+    return (
+      <div className="App" data-theme={theme ? "dark" : "light"}>
+        <Alert />
+        <div style={{ 
+          minHeight: '100vh', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center' 
+        }}>
+          <LoadingSpinner />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Router>
       <Alert />
 
-      <input type="checkbox" id="theme" />
-      <div className={`App ${(status || modal) && "mode"}`}>
+      <div
+        className={`App ${(status || modal) && "mode"}`}
+        data-theme={theme ? "dark" : "light"}
+      >
         <div className="main">
           {auth.token && <Header />}
           {status && <StatusModal />}
@@ -80,9 +126,12 @@ function App() {
 
           <Route exact path="/" component={auth.token ? Home : Login} />
           <Route exact path="/register" component={Register} />
+          <Route exact path="/verify-email/:token" component={VerifyEmail} />
 
           <PrivateRouter exact path="/:page" component={PageRender} />
           <PrivateRouter exact path="/:page/:id" component={PageRender} />
+          
+          {auth.token && <BottomNav />}
         </div>
       </div>
     </Router>
