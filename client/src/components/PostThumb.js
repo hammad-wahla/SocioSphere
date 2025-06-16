@@ -3,10 +3,18 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const PostThumb = ({ posts, result }) => {
-  const { theme } = useSelector((state) => state);
-
   if (result === 0)
-    return <h4 className="text-center mt-3 text-info ">No posts yet</h4>;
+    return (
+      <div className="text-center py-4">
+        <div className="mb-3">
+          <i className="fas fa-camera fa-2x text-muted"></i>
+        </div>
+        <h5 className="text-muted mb-2">No posts shared yet</h5>
+        <p className="text-muted">
+          When you start sharing photos and thoughts, they'll appear here
+        </p>
+      </div>
+    );
 
   return (
     <div className="post_thumb">
@@ -20,14 +28,9 @@ const PostThumb = ({ posts, result }) => {
                   controls
                   src={post.images[0].url}
                   alt={post.images[0].url}
-                  style={{ filter: theme ? "invert(1)" : "invert(0)" }}
                 />
               ) : (
-                <img
-                  src={post.images[0].url}
-                  alt={post.images[0].url}
-                  style={{ filter: theme ? "invert(1)" : "invert(0)" }}
-                />
+                <img src={post.images[0].url} alt={post.images[0].url} />
               ))}
 
             <div className="post_thumb_menu">

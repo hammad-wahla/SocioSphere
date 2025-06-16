@@ -1,28 +1,242 @@
+/* Base avatar styles with responsive sizing */
 .supper-avatar {
   width: 150px;
   height: 150px;
   border-radius: 50%;
+  margin-right: 20px;
+  object-fit: cover;
 }
 
 .big-avatar {
   width: 50px;
   height: 50px;
   border-radius: 50%;
+  margin-right: 12px;
+  object-fit: cover;
 }
 
 .medium-avatar {
   width: 30px;
   height: 30px;
   border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
 }
 
 .small-avatar {
   width: 22px;
   height: 22px;
   border-radius: 50%;
+  margin-right: 8px;
+  object-fit: cover;
 }
+
+.tiny-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
 .header-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  margin-right: 8px;
+  object-fit: cover;
+}
+
+.profile-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-right: 0;
+  object-fit: cover;
+}
+
+.bottom-nav-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  margin-right: 0;
+  object-fit: cover;
+}
+
+.suggestion-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-right: 0;
+  object-fit: cover;
+}
+
+/* Override for specific components that need custom spacing */
+.d-flex .supper-avatar,
+.d-flex .big-avatar,
+.d-flex .medium-avatar,
+.d-flex .small-avatar,
+.d-flex .tiny-avatar,
+.d-flex .header-avatar {
+  margin-right: inherit;
+}
+
+/* Consistent spacing for common flex layouts */
+.d-flex.align-items-center .big-avatar {
+  margin-right: 12px;
+}
+
+.d-flex.align-items-center .medium-avatar {
+  margin-right: 10px;
+}
+
+.d-flex.align-items-center .small-avatar {
+  margin-right: 8px;
+}
+
+.d-flex.align-items-center .tiny-avatar {
+  margin-right: 10px;
+}
+
+.d-flex.align-items-center .header-avatar {
+  margin-right: 8px;
+}
+
+/* Message avatars - no extra margin as handled by message layout */
+.message-avatar .tiny-avatar {
+  margin-right: 0;
+}
+
+/* Responsive Design - Tablet */
+@media (max-width: 768px) {
+  .supper-avatar {
+    width: 120px;
+    height: 120px;
+    margin-right: 15px;
+  }
+
+  .profile-avatar {
+    width: 120px;
+    height: 120px;
+  }
+
+  .big-avatar {
+    width: 45px;
+    height: 45px;
+    margin-right: 10px;
+  }
+
+  .header-avatar {
+    width: 36px;
+    height: 36px;
+    margin-right: 6px;
+  }
+
+  .suggestion-avatar {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+/* Responsive Design - Mobile */
+@media (max-width: 480px) {
+  .supper-avatar {
+    width: 100px;
+    height: 100px;
+    margin-right: 12px;
+  }
+
+  .profile-avatar {
+    width: 100px;
+    height: 100px;
+  }
+
+  .big-avatar {
+    width: 40px;
+    height: 40px;
+    margin-right: 8px;
+  }
+
+  .medium-avatar {
+    width: 28px;
+    height: 28px;
+    margin-right: 8px;
+  }
+
+  .header-avatar {
+    width: 32px;
+    height: 32px;
+    margin-right: 5px;
+  }
+
+  /* Reduce margins on mobile for better space utilization */
+  .d-flex.align-items-center .big-avatar {
+    margin-right: 10px;
+  }
+
+  .d-flex.align-items-center .medium-avatar {
+    margin-right: 8px;
+  }
+
+  .d-flex.align-items-center .small-avatar {
+    margin-right: 6px;
+  }
+
+  .d-flex.align-items-center .tiny-avatar {
+    margin-right: 8px;
+  }
+
+  .suggestion-avatar {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+/* Responsive Design - Small Mobile */
+@media (max-width: 360px) {
+  .supper-avatar {
+    width: 80px;
+    height: 80px;
+    margin-right: 10px;
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .big-avatar {
+    width: 36px;
+    height: 36px;
+    margin-right: 6px;
+  }
+
+  .medium-avatar {
+    width: 26px;
+    height: 26px;
+    margin-right: 6px;
+  }
+
+  .small-avatar {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+  }
+
+  .tiny-avatar {
+    width: 24px;
+    height: 24px;
+    margin-right: 6px;
+  }
+
+  .header-avatar {
+    width: 28px;
+    height: 28px;
+    margin-right: 4px;
+  }
+
+  .suggestion-avatar {
+    width: 56px;
+    height: 56px;
+  }
 }

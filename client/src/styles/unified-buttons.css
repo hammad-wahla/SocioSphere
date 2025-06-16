@@ -1,0 +1,399 @@
+/* ========== Unified Button System ========== */
+/* This file defines the consistent button theme across the entire application */
+
+/* ========== Base Button Styles ========== */
+.btn-unified {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-height: 44px; /* Ensures accessibility */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-unified:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(13, 202, 240, 0.3);
+}
+
+.btn-unified:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ========== Small Size Variant ========== */
+.btn-unified.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  min-height: 36px;
+  border-radius: 10px;
+}
+
+/* ========== Large Size Variant ========== */
+.btn-unified.btn-lg {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  min-height: 52px;
+  border-radius: 14px;
+}
+
+/* ========== Primary Button ========== */
+.btn-unified.btn-primary {
+  background: linear-gradient(135deg, #0dcaf0, #0bb5d6);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(13, 202, 240, 0.3);
+}
+
+.btn-unified.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0bb5d6, #0aa2c0);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(13, 202, 240, 0.4);
+}
+
+.btn-unified.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(13, 202, 240, 0.3);
+}
+
+/* ========== Success Button ========== */
+.btn-unified.btn-success {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.btn-unified.btn-success:hover:not(:disabled) {
+  background: linear-gradient(135deg, #218838, #1e7e34);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+/* ========== Danger Button ========== */
+.btn-unified.btn-danger {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+}
+
+.btn-unified.btn-danger:hover:not(:disabled) {
+  background: linear-gradient(135deg, #c82333, #bd2130);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+}
+
+/* ========== Warning Button ========== */
+.btn-unified.btn-warning {
+  background: linear-gradient(135deg, #ffc107, #e0a800);
+  color: #212529;
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+}
+
+.btn-unified.btn-warning:hover:not(:disabled) {
+  background: linear-gradient(135deg, #e0a800, #d39e00);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+}
+
+/* ========== Secondary Button ========== */
+.btn-unified.btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.btn-unified.btn-secondary:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  border-color: #0dcaf0;
+  color: #0dcaf0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(13, 202, 240, 0.2);
+}
+
+/* ========== Outline Variants ========== */
+.btn-unified.btn-outline-primary {
+  background: transparent;
+  color: #0dcaf0;
+  border-color: #0dcaf0;
+}
+
+.btn-unified.btn-outline-primary:hover:not(:disabled) {
+  background: #0dcaf0;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(13, 202, 240, 0.3);
+}
+
+.btn-unified.btn-outline-success {
+  background: transparent;
+  color: #28a745;
+  border-color: #28a745;
+}
+
+.btn-unified.btn-outline-success:hover:not(:disabled) {
+  background: #28a745;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.btn-unified.btn-outline-danger {
+  background: transparent;
+  color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-unified.btn-outline-danger:hover:not(:disabled) {
+  background: #dc3545;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+}
+
+.btn-unified.btn-outline-warning {
+  background: transparent;
+  color: #ffc107;
+  border-color: #ffc107;
+}
+
+.btn-unified.btn-outline-warning:hover:not(:disabled) {
+  background: #ffc107;
+  color: #212529;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+}
+
+.btn-unified.btn-outline-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border-color);
+}
+
+.btn-unified.btn-outline-secondary:hover:not(:disabled) {
+  background: var(--bg-secondary);
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+/* ========== Icon Only Buttons ========== */
+.btn-unified.btn-icon {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  min-height: unset;
+}
+
+.btn-unified.btn-icon i {
+  font-size: 18px !important;
+  line-height: 1;
+}
+
+.btn-unified.btn-icon.btn-sm {
+  width: 36px;
+  height: 36px;
+}
+
+.btn-unified.btn-icon.btn-sm i {
+  font-size: 16px !important;
+  line-height: 1;
+}
+
+.btn-unified.btn-icon.btn-lg {
+  width: 52px;
+  height: 52px;
+}
+
+.btn-unified.btn-icon.btn-lg i {
+  font-size: 20px !important;
+  line-height: 1;
+}
+
+/* ========== Loading State ========== */
+.btn-unified.btn-loading {
+  position: relative;
+  pointer-events: none;
+  color: transparent !important;
+}
+
+.btn-unified.btn-loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid currentColor;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: btn-unified-spin 1s linear infinite;
+  color: inherit;
+}
+
+.btn-unified.btn-loading.btn-sm::after {
+  width: 16px;
+  height: 16px;
+}
+
+.btn-unified.btn-loading.btn-lg::after {
+  width: 24px;
+  height: 24px;
+}
+
+@keyframes btn-unified-spin {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* ========== Special Follow Button Styles ========== */
+.btn-unified.btn-follow {
+  min-width: 100px;
+}
+
+.btn-unified.btn-follow i {
+  font-size: 14px !important;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+.btn-unified.btn-follow.following {
+  background: transparent;
+  color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-unified.btn-follow.following:hover:not(:disabled) {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-unified.btn-follow.requested {
+  background: transparent;
+  color: #ffc107;
+  border-color: #ffc107;
+  cursor: pointer;
+}
+
+.btn-unified.btn-follow.requested:hover:not(:disabled) {
+  background: #ffc107;
+  color: #212529;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+}
+
+/* ========== Ghost Button Variant ========== */
+.btn-unified.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.btn-unified.btn-ghost:hover:not(:disabled) {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transform: none;
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+/* ========== Dark Theme Adjustments ========== */
+[data-theme="dark"] .btn-unified.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ecf0f1;
+}
+
+[data-theme="dark"] .btn-unified.btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #0dcaf0;
+}
+
+[data-theme="dark"] .btn-unified.btn-outline-secondary {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #bdc3c7;
+}
+
+[data-theme="dark"] .btn-unified.btn-outline-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #ecf0f1;
+}
+
+/* ========== Mobile Responsive ========== */
+@media (max-width: 768px) {
+  .btn-unified {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.8rem;
+  }
+
+  .btn-unified.btn-sm {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.75rem;
+  }
+
+  .btn-unified.btn-lg {
+    padding: 0.875rem 1.75rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* ========== Accessibility ========== */
+@media (prefers-reduced-motion: reduce) {
+  .btn-unified {
+    transition: none;
+    animation: none;
+  }
+
+  .btn-unified:hover {
+    transform: none !important;
+  }
+}
+
+/* ========== High Contrast Mode ========== */
+@media (prefers-contrast: high) {
+  .btn-unified {
+    border-width: 3px;
+  }
+
+  .btn-unified.btn-primary {
+    background: #0066cc;
+    border-color: #004499;
+  }
+
+  .btn-unified.btn-success {
+    background: #006600;
+    border-color: #004400;
+  }
+
+  .btn-unified.btn-danger {
+    background: #cc0000;
+    border-color: #990000;
+  }
+}

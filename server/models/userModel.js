@@ -43,6 +43,28 @@ const userSchema = new mongoose.Schema(
     followers: [{ type: mongoose.Types.ObjectId, ref: "user" }],
     following: [{ type: mongoose.Types.ObjectId, ref: "user" }],
     saved: [{ type: mongoose.Types.ObjectId, ref: "user" }],
+    // Privacy Settings
+    isPrivate: { type: Boolean, default: false },
+    allowMessages: { type: Boolean, default: true },
+    showOnline: { type: Boolean, default: true },
+    allowTagging: { type: Boolean, default: true },
+    // Follow Requests for Private Accounts
+    followRequests: [{ type: mongoose.Types.ObjectId, ref: "user" }],
+    pendingRequests: [{ type: mongoose.Types.ObjectId, ref: "user" }],
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    emailVerificationToken: {
+      type: String,
+      default: "",
+    },
+    // Theme preference
+    theme: {
+      type: String,
+      enum: ["light", "dark"],
+      default: "light",
+    },
   },
   {
     timestamps: true,

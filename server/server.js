@@ -12,9 +12,10 @@ app.use(express.json());
 // app.use(cors());
 app.use(
   cors({
-    origin: "https://socio-sphere-app.vercel.app",
+    origin: "http://localhost:3000",
     credentials: true,
   })
+);
 app.use(cookieParser());
 
 // Socket
@@ -58,7 +59,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 4000;
 http.listen(port, () => {
   console.log("Server is running on port", port);
 });

@@ -28,55 +28,129 @@ const userCtrl = {
   },
   updateUser: async (req, res) => {
     try {
-      const { avatar, fullname, mobile, address, story, website, gender } =
-        req.body;
+      const {
+        avatar,
+        fullname,
+        mobile,
+        address,
+        story,
+        website,
+        gender,
+        privacy,
+        notifications,
+        theme,
+      } = req.body;
+
       if (!fullname)
         return res.status(400).json({ msg: "Please add your full name." });
 
-      await Users.findOneAndUpdate(
-        { _id: req.user._id },
-        {
-          avatar,
-          fullname,
-          mobile,
-          address,
-          story,
-          website,
-          gender,
-        }
-      );
+      const updateData = {
+        avatar,
+        fullname,
+        mobile,
+        address,
+        story,
+        website,
+        gender,
+      };
 
-      res.json({ msg: "Update Success!" });
+      // Add theme preference if provided
+      if (theme) {
+        updateData.theme = theme;
+      }
+
+      // Add privacy settings if provided
+      if (privacy) {
+        updateData.isPrivate = privacy.isPrivate;
+        updateData.allowMessages = privacy.allowMessages;
+        updateData.showOnline = privacy.showOnline;
+        updateData.allowTagging = privacy.allowTagging;
+      }
+
+      // Add notification settings if provided (can be expanded later)
+      if (notifications) {
+        // Store notifications in user model if needed
+        // For now, we'll just acknowledge them
+      }
+
+      const updatedUser = await Users.findOneAndUpdate(
+        { _id: req.user._id },
+        updateData,
+        { new: true }
+      ).select("-password");
+
+      res.json({
+        msg: "Update Success!",
+        user: updatedUser,
+      });
     } catch (err) {
       return res.status(500).json({ msg: err.message });
     }
   },
   follow: async (req, res) => {
     try {
+      // Check if already following
       const user = await Users.find({
         _id: req.params.id,
         followers: req.user._id,
       });
       if (user.length > 0)
-        return res.status(500).json({ msg: "You followed this user." });
+        return res.status(500).json({ msg: "You already follow this user." });
 
-      const newUser = await Users.findOneAndUpdate(
-        { _id: req.params.id },
-        {
-          $push: { followers: req.user._id },
-        },
-        { new: true }
-      ).populate("followers following", "-password");
+      // Check if there's already a pending request
+      const existingRequest = await Users.find({
+        _id: req.params.id,
+        followRequests: req.user._id,
+      });
+      if (existingRequest.length > 0)
+        return res.status(500).json({ msg: "Follow request already sent." });
 
-      await Users.findOneAndUpdate(
-        { _id: req.user._id },
-        {
-          $push: { following: req.params.id },
-        },
-        { new: true }
-      );
+      // Get target user to check if account is private
+      const targetUser = await Users.findById(req.params.id);
+      if (!targetUser) return res.status(400).json({ msg: "User not found." });
 
-      res.json({ newUser });
+      // If account is private, send follow request instead of following directly
+      if (targetUser.isPrivate) {
+        // Add to target user's follow requests
+        await Users.findOneAndUpdate(
+          { _id: req.params.id },
+          { $push: { followRequests: req.user._id } },
+          { new: true }
+        );
+
+        // Add to current user's pending requests
+        await Users.findOneAndUpdate(
+          { _id: req.user._id },
+          { $push: { pendingRequests: req.params.id } },
+          { new: true }
+        );
+
+        const updatedUser = await Users.findById(req.params.id).populate(
+          "followers following followRequests",
+          "-password"
+        );
+
+        res.json({
+          newUser: updatedUser,
+          requestSent: true,
+          msg: "Follow request sent!",
+        });
+      } else {
+        // Public account - follow directly
+        const newUser = await Users.findOneAndUpdate(
+          { _id: req.params.id },
+          { $push: { followers: req.user._id } },
+          { new: true }
+        ).populate("followers following", "-password");
+
+        await Users.findOneAndUpdate(
+          { _id: req.user._id },
+          { $push: { following: req.params.id } },
+          { new: true }
+        );
+
+        res.json({ newUser });
+      }
     } catch (err) {
       return res.status(500).json({ msg: err.message });
     }
@@ -134,6 +208,150 @@ const userCtrl = {
       return res.json({
         users,
         result: users.length,
+      });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
+
+  // Accept follow request
+  acceptFollowRequest: async (req, res) => {
+    try {
+      const requesterId = req.params.id;
+
+      // Check if there's a pending request
+      const currentUser = await Users.findById(req.user._id);
+      if (!currentUser.followRequests.includes(requesterId)) {
+        return res
+          .status(400)
+          .json({ msg: "No follow request from this user." });
+      }
+
+      // Add to followers and following
+      await Users.findOneAndUpdate(
+        { _id: req.user._id },
+        {
+          $push: { followers: requesterId },
+          $pull: { followRequests: requesterId },
+        }
+      );
+
+      await Users.findOneAndUpdate(
+        { _id: requesterId },
+        {
+          $push: { following: req.user._id },
+          $pull: { pendingRequests: req.user._id },
+        }
+      );
+
+      const updatedUser = await Users.findById(req.user._id).populate(
+        "followers following followRequests",
+        "-password"
+      );
+
+      res.json({
+        user: updatedUser,
+        msg: "Follow request accepted!",
+      });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
+
+  // Reject follow request
+  rejectFollowRequest: async (req, res) => {
+    try {
+      const requesterId = req.params.id;
+
+      // Remove from follow requests and pending requests
+      await Users.findOneAndUpdate(
+        { _id: req.user._id },
+        { $pull: { followRequests: requesterId } }
+      );
+
+      await Users.findOneAndUpdate(
+        { _id: requesterId },
+        { $pull: { pendingRequests: req.user._id } }
+      );
+
+      const updatedUser = await Users.findById(req.user._id).populate(
+        "followers following followRequests",
+        "-password"
+      );
+
+      res.json({
+        user: updatedUser,
+        msg: "Follow request rejected!",
+      });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
+
+  // Get follow requests
+  getFollowRequests: async (req, res) => {
+    try {
+      const user = await Users.findById(req.user._id)
+        .populate("followRequests", "fullname username avatar")
+        .select("followRequests");
+
+      res.json({ followRequests: user.followRequests });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
+
+  // Cancel follow request
+  cancelFollowRequest: async (req, res) => {
+    try {
+      const targetUserId = req.params.id;
+
+      // Check if there's a pending request
+      const currentUser = await Users.findById(req.user._id);
+      if (!currentUser.pendingRequests.includes(targetUserId)) {
+        return res.status(400).json({ msg: "No pending follow request to this user." });
+      }
+
+      // Remove from target user's follow requests
+      await Users.findOneAndUpdate(
+        { _id: targetUserId },
+        { $pull: { followRequests: req.user._id } }
+      );
+
+      // Remove from current user's pending requests
+      const updatedUser = await Users.findOneAndUpdate(
+        { _id: req.user._id },
+        { $pull: { pendingRequests: targetUserId } },
+        { new: true }
+      ).populate("followers following", "-password");
+
+      res.json({
+        user: updatedUser,
+        msg: "Follow request cancelled!",
+      });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
+
+  // Update theme preference
+  updateTheme: async (req, res) => {
+    try {
+      const { theme } = req.body;
+
+      if (!theme || !["light", "dark"].includes(theme)) {
+        return res.status(400).json({ msg: "Invalid theme value." });
+      }
+
+      const updatedUser = await Users.findOneAndUpdate(
+        { _id: req.user._id },
+        { theme },
+        { new: true }
+      ).select("-password");
+
+      res.json({
+        msg: "Theme updated successfully!",
+        user: updatedUser,
       });
     } catch (err) {
       return res.status(500).json({ msg: err.message });

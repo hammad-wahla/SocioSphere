@@ -1,0 +1,320 @@
+/* ============ Notifications Page Styles ============ */
+.notifications-page {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure full height on mobile and prevent page scroll */
+@media (max-width: 767px) {
+  .notifications-page {
+    min-height: calc(100vh - 130px); /* Account for header + bottom nav */
+    max-height: calc(100vh - 130px);
+    height: calc(100vh - 130px);
+    overflow: hidden;
+    position: fixed;
+    top: 60px; /* Header height */
+    left: 0;
+    right: 0;
+    bottom: 70px; /* Bottom nav height */
+  }
+}
+
+.notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+/* Compact header on mobile */
+@media (max-width: 767px) {
+  .notifications-header {
+    padding: 15px;
+    min-height: 60px;
+  }
+}
+
+.notifications-header h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.notifications-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 20px 20px 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Fix mobile container height */
+@media (max-width: 767px) {
+  .notifications-container {
+    height: calc(100% - 80px); /* Account for notifications header */
+    max-height: calc(100% - 80px);
+    overflow-y: auto;
+    padding: 0 15px 10px 15px;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Override NotifyModal styles for page view */
+.notifications-page .modern-notify-modal {
+  box-shadow: none;
+  border-radius: 0;
+  max-width: none;
+  width: 100%;
+  background: transparent;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.notifications-page .notify-header {
+  display: none; /* Hide header in page view */
+}
+
+.notifications-page .notify-content {
+  padding: 0;
+  flex: 1;
+  overflow-y: auto;
+  height: 100%;
+  max-height: none !important; /* Remove the 400px height restriction */
+}
+
+/* Fix notify content on mobile */
+@media (max-width: 767px) {
+  .notifications-page .notify-content {
+    height: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+    padding: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+.notifications-page .notify-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 0;
+  min-height: 100%;
+  height: auto;
+}
+
+/* Compact notification list on mobile */
+@media (max-width: 767px) {
+  .notifications-page .notify-list {
+    gap: 8px;
+    padding: 5px 0;
+  }
+}
+
+.notifications-page .notify-item {
+  background: var(--bg-secondary);
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  transition: all 0.2s ease;
+}
+
+/* Smaller notification items on mobile */
+@media (max-width: 767px) {
+  .notifications-page .notify-item {
+    padding: 10px 12px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+  }
+  
+  /* Improve notification link layout */
+  .notifications-page .notify-link {
+    padding: 12px;
+    gap: 10px;
+  }
+  
+  /* Reduce avatar size in notifications */
+  .notifications-page .notify-avatar {
+    margin-right: 10px;
+  }
+  
+  .notifications-page .notify-avatar img {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  
+  /* Better text organization */
+  .notifications-page .notify-body {
+    gap: 3px;
+  }
+  
+  .notifications-page .notify-main {
+    line-height: 1.3;
+    margin-bottom: 2px;
+  }
+  
+  /* Compact notification text */
+  .notifications-page .notify-username {
+    font-size: 14px;
+    font-weight: 600;
+    margin-right: 4px;
+  }
+  
+  .notifications-page .notify-action {
+    font-size: 13px;
+    line-height: 1.3;
+  }
+  
+  .notifications-page .notify-time {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  
+  .notifications-page .notify-content-preview {
+    font-size: 12px;
+    margin: 2px 0;
+    line-height: 1.3;
+    color: var(--text-muted);
+  }
+  
+  /* Hide media on very small screens to save space */
+  .notifications-page .notify-media {
+    display: none;
+  }
+  
+  /* Position unread dot better */
+  .notifications-page .unread-dot {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-left: 0;
+  }
+  
+  /* Improve notification type icon on mobile */
+  .notifications-page .notify-type-icon {
+    width: 14px;
+    height: 14px;
+    font-size: 8px;
+    bottom: -1px;
+    right: -1px;
+  }
+  
+  /* Better text wrapping and spacing */
+  .notifications-page .notify-main {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 2px;
+  }
+  
+  /* Ensure text doesn't overflow */
+  .notifications-page .notify-username,
+  .notifications-page .notify-action {
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+}
+
+.notifications-page .notify-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.notifications-page .notify-footer {
+  display: none; /* Hide footer in page view */
+}
+
+/* Dark mode support */
+[data-theme="dark"] .notifications-page {
+  background: var(--bg-primary);
+}
+
+[data-theme="dark"] .notifications-header {
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .notifications-page .notify-item {
+  background: var(--bg-secondary);
+}
+
+/* Scrollbar styling */
+.notifications-container::-webkit-scrollbar,
+.notifications-page .notify-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notifications-container::-webkit-scrollbar-thumb,
+.notifications-page .notify-content::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 3px;
+}
+
+.notifications-container::-webkit-scrollbar-track,
+.notifications-page .notify-content::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+/* Mobile specific styles */
+@media (max-width: 768px) {
+  .notifications-container {
+    padding: 0 15px 20px 15px;
+    flex: 1;
+    height: auto;
+  }
+  
+  .notifications-page .notify-content {
+    flex: 1;
+    height: auto;
+  }
+  
+  .notifications-page .notify-list {
+    flex: 1;
+    min-height: auto;
+  }
+
+  .notifications-header {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  .notifications-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .notifications-page .notify-item {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .notifications-page {
+    padding: 10px;
+    padding-bottom: 85px;
+  }
+
+  .notifications-header {
+    padding: 12px 15px;
+    border-radius: 15px;
+  }
+
+  .notifications-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .notifications-header .btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}

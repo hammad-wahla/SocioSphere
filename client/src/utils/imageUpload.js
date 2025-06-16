@@ -23,19 +23,37 @@ export const imageUpload = async (images) => {
       formData.append("file", item);
     }
 
-    formData.append("upload_preset", "efxjficn");
-    formData.append("cloud_name", "devat-channel");
+    // Use the unsigned preset you create in Cloudinary dashboard
+    formData.append("upload_preset", "profiles");
+    formData.append("cloud_name", "dmptubk2f");
 
-    const res = await fetch(
-      "https://api.cloudinary.com/v1_1/dobvysjm7/image/upload ",
-      {
-        method: "POST",
-        body: formData,
+    try {
+      const res = await fetch(
+        "https://api.cloudinary.com/v1_1/dmptubk2f/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await res.json();
+
+      console.log("Cloudinary response:", data); // Debug log
+
+      if (data.error) {
+        console.error("Cloudinary upload error:", data.error);
+        throw new Error(data.error.message);
       }
-    );
 
-    const data = await res.json();
-    imgArr.push({ public_id: data.public_id, url: data.secure_url });
+      if (!data.public_id || !data.secure_url) {
+        throw new Error("Invalid response from Cloudinary");
+      }
+
+      imgArr.push({ public_id: data.public_id, url: data.secure_url });
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      throw new Error(`Upload failed: ${error.message}`);
+    }
   }
   return imgArr;
 };

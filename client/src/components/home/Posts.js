@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import PostCard from "../PostCard";
-
-import LoadIcon from "../../images/loading.gif";
+import LoadingSpinner from "../LoadingSpinner";
 import LoadMoreBtn from "../LoadMoreBtn";
 import { getDataAPI } from "../../utils/fetchData";
 import { POST_TYPES } from "../../redux/actions/postAction";
@@ -19,12 +18,10 @@ const Posts = () => {
       `posts?limit=${homePosts.page * 9}`,
       auth.token
     );
-
     dispatch({
       type: POST_TYPES.GET_POSTS,
       payload: { ...res.data, page: homePosts.page + 1 },
     });
-
     setLoad(false);
   };
 
@@ -34,7 +31,13 @@ const Posts = () => {
         <PostCard key={post._id} post={post} theme={theme} />
       ))}
 
-      {load && <img src={LoadIcon} alt="loading" className="d-block mx-auto" />}
+      {load && (
+        <LoadingSpinner
+          type="spinner"
+          text="Loading more posts..."
+          size="small"
+        />
+      )}
 
       <LoadMoreBtn
         result={homePosts.result}

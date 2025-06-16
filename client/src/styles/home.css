@@ -1,105 +1,941 @@
-/* --------- Status ---------- */
+/* ============ Modern Home Page Styles ============ */
+
+/* --------- Status Section ---------- */
 .status {
-  background: #fff;
-  box-shadow: 0 1px 2px 0px #dedede;
-  padding: 20px;
-  border-radius: 15px;
-  /* box-shadow: #ededed 0px 0px 15px 0px; */
-  /* box-shadow: #e8f6f9 0px 0px 15px 0px; */
-  /* box-shadow: 0 0 10px #464646; */
-  border: 1px solid rgba(0, 0, 0, 0.125);
-}
-.LeftSide {
-  background: #fff;
-  box-shadow: 0 1px 2px 0px #dedede;
-  padding: 20px;
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.125);
-}
-.status .statusBtn {
-  background: #fff;
-  border: 0.2px solid rgb(230, 228, 228);
-  outline: none;
-  border-radius: 30px;
-  color: #555;
-  padding: 0 10px;
-  text-align: left;
-  margin: 0 5px;
-}
-.status .statusBtn:hover {
-  background: #ddd;
+  background: var(--bg-primary);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px var(--shadow-color);
+  padding: 25px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  position: relative;
+  overflow: hidden;
 }
 
-/* ------------Posts ------ */
+.status .statusBtn {
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  outline: none;
+  border-radius: 25px;
+  color: var(--text-muted);
+  padding: 15px 20px;
+  text-align: left;
+  margin: 0 15px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px var(--shadow-color);
+  position: relative;
+}
+
+.status .statusBtn:hover {
+  background: var(--bg-tertiary);
+  border-color: #0dcaf0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(13, 202, 240, 0.15);
+  color: #0dcaf0;
+}
+
+.status .statusBtn:focus {
+  border-color: #0dcaf0;
+  box-shadow: 0 0 0 3px rgba(13, 202, 240, 0.1);
+}
+
+/* --------- Left Sidebar ---------- */
+.LeftSide {
+  background: var(--bg-primary);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px var(--shadow-color);
+  padding: 20px 15px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.LeftSide h5 {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.LeftSide h5 i {
+  color: #0dcaf0;
+  font-size: 1.1em;
+}
+
+.LeftSide hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e9ecef, transparent);
+  margin: 15px 0;
+}
+
+/* --------- Posts Section ---------- */
 .posts .card {
-  border: 1px solid rgba(0, 0, 0, 0.125);
-  box-shadow: 0 1px 2px 0px #dedede;
-  /* border: none; */
-  border-radius: 15px;
+  border: none;
+  box-shadow: 0 8px 32px var(--shadow-color);
+  border-radius: 20px;
   max-width: 100%;
-  margin: 0 auto;
+  margin: 0 auto 25px auto;
+  background: var(--bg-primary);
+  backdrop-filter: blur(10px);
+  overflow: visible;
+  transition: all 0.3s ease;
+  position: relative;
+  color: var(--text-primary);
+}
+
+.posts .card:hover {
+  /* transform: translateY(-5px); */
+  box-shadow: 0 12px 40px rgba(13, 202, 240, 0.15);
 }
 
 /* --------- Post Card Header --------- */
 .posts .card_header {
   display: flex;
   justify-content: space-between;
+  border-radius: 20px 20px 0 0;
   align-items: center;
   cursor: pointer;
-  padding: 15px 25px;
+  padding: 20px 25px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
 }
+
 .posts .card_header .card_name {
-  transform: translateY(3px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
+
+.posts .card_header .card_name h6 {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.posts .card_header .card_name small {
+  color: var(--text-secondary);
+  font-size: 0.85em;
+}
+
 .posts .card_header .dropdown-menu {
-  position: absolute;
-  right: 0;
-  left: inherit;
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  left: auto !important;
+  transform: none !important;
+  margin-top: 8px !important;
+  border: none;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  border-radius: 15px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 1050 !important;
+  min-width: 180px !important;
 }
+
 .posts .card_header .dropdown-item {
   display: flex;
+  align-items: center;
+  gap: 10px;
   margin: 5px 0;
+  padding: 10px 15px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  color: #495057;
+}
+
+.posts .card_header .dropdown-item:hover {
+  background: rgba(13, 202, 240, 0.1);
+  color: #0dcaf0;
+  transform: translateX(5px);
 }
 
 /* ---------- Post Card Body ---------- */
 .posts .card_body-content {
-  padding: 0 25px;
-  margin-top: -10px;
-  margin-bottom: 10px;
+  padding: 20px 25px;
+  margin-top: 0;
+  margin-bottom: 15px;
+  line-height: 1.6;
+  font-size: 16px;
+  color: var(--text-primary);
 }
+
 .posts .card_body-content .readMore {
-  color: crimson;
+  color: #0dcaf0;
   cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.posts .card_body-content .readMore:hover {
+  color: #0bb5d6;
+  text-decoration: underline;
 }
 
 /* ---------- Post Card Footer ---------- */
 .posts .card_icon_menu {
   display: flex;
   justify-content: space-between;
-  padding: 0 15px;
-  cursor: pointer;
-}
-.posts .card_icon_menu i {
-  font-size: 28px;
-  margin: 10px;
-}
-.posts .card_icon_menu img {
-  width: 28px;
-  height: 28px;
-  transform: translate(5px, -5px);
-  opacity: 0.9;
+  padding: 8px 25px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
 }
 
-/*------------- rightside -------------- */
-.rightSide1 {
-  border-radius: 20px;
-  box-shadow: 0 1px 2px 0px #dedede;
-  /* box-shadow: #e8f6f9 0px 0px 15px 0px; */
-  padding: 10px 20px;
-  /* min-height: 400px; */
+.posts .card_icon_menu > div {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
+
+.posts .card_icon_menu i {
+  font-size: 20px;
+  margin: 0;
+  color: var(--text-muted);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  position: relative;
+}
+
+.posts .card_icon_menu i:hover {
+  color: #0dcaf0;
+  background: rgba(13, 202, 240, 0.1);
+  transform: scale(1.1);
+}
+
+.posts .card_icon_menu .fa-heart.text-danger {
+  color: #dc3545 !important;
+}
+
+.posts .card_icon_menu .fa-heart.text-danger:hover {
+  color: #c82333 !important;
+  background: rgba(220, 53, 69, 0.1);
+}
+
+.posts .card_icon_menu a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  text-decoration: none;
+}
+
+.posts .card_icon_menu a i {
+  margin: 0;
+}
+
+.posts .card_icon_menu img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  opacity: 0.9;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: block;
+  margin: 0;
+}
+
+.posts .card_icon_menu img:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* --------- Right Sidebar ---------- */
+.rightSide1 {
+  background: var(--bg-primary);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px var(--shadow-color);
+  padding: 25px;
+  border: 1px solid var(--border-color);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.rightSide1:hover {
+  box-shadow: 0 12px 40px var(--shadow-color);
+  transform: translateY(-2px);
+}
+
 .right-content {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+/* --------- Suggestions Section ---------- */
+.suggestions h5 {
+  color: var(--text-primary);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+}
+
+.suggestions h5 i {
+  color: #0dcaf0;
+  font-size: 1.2em;
+}
+
+.suggestions .fa-redo {
+  color: var(--text-muted);
+  font-size: 16px;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.suggestions .fa-redo:hover {
+  color: #0dcaf0;
+  background: rgba(13, 202, 240, 0.1);
+  transform: rotate(180deg);
+}
+
+/* --------- Empty States ---------- */
+.text-center.py-5 {
+  padding: 40px 20px !important;
+  background: var(--bg-secondary);
+  border-radius: 20px;
+  border: 2px dashed var(--border-color);
+  margin: 20px 0;
+}
+
+.text-center.py-5 .fa-users {
+  color: #0dcaf0;
+  margin-bottom: 20px;
+}
+
+.text-center.py-5 h3 {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.text-center.py-5 p {
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.text-center.py-5 ul li {
+  padding: 8px 0;
+  color: var(--text-secondary);
+  text-align: left;
+}
+
+.text-center.py-5 ul li i {
+  width: 20px;
+  margin-right: 10px;
+}
+
+/* --------- User Card Enhancements ---------- */
+.user-card {
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  position: relative;
+  background: transparent;
+  border: 1px solid rgba(13, 202, 240, 0.15);
+}
+
+/* Ensure consistent spacing for both LeftSide and rightSide1 user cards */
+.LeftSide .user-card,
+.rightSide1 .user-card {
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  position: relative;
+  border: 1px solid rgba(13, 202, 240, 0.15);
+}
+
+.follow-icon-corner {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+/* Smaller follow icons in suggestions */
+.LeftSide .follow-icon-corner .btn-unified.btn-icon,
+.rightSide1 .follow-icon-corner .btn-unified.btn-icon {
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.LeftSide .follow-icon-corner .btn-unified.btn-icon i,
+.rightSide1 .follow-icon-corner .btn-unified.btn-icon i {
+  font-size: 12px !important;
+}
+
+/* Ensure UserCard layout is not affected by the follow icon */
+.user-card .d-flex {
+  width: 100% !important;
+  position: relative;
+}
+
+.user-card:hover {
+  background: rgba(13, 202, 240, 0.05);
+  transform: translateX(3px);
+  border-color: rgba(13, 202, 240, 0.3);
+  box-shadow: 0 4px 15px rgba(13, 202, 240, 0.15);
+}
+
+/* Enhanced Follow Button Styling */
+.follow-btn {
+  box-shadow: 0 2px 8px rgba(13, 202, 240, 0.3) !important;
+  transition: all 0.3s ease !important;
+  border-radius: 20px !important;
+  font-weight: 600 !important;
+  min-width: 80px !important;
+  justify-content: center !important;
+}
+
+.follow-btn:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(13, 202, 240, 0.4) !important;
+}
+
+.follow-btn.btn-outline-danger:hover {
+  background: #dc3545 !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4) !important;
+}
+
+.follow-btn:disabled {
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+.user-card a {
+  text-decoration: none !important;
+  border: none !important;
+  border-bottom: none !important;
+  color: var(--text-primary) !important;
+}
+
+.user-card a:hover {
+  text-decoration: none !important;
+  border: none !important;
+  border-bottom: none !important;
+  color: var(--text-primary) !important;
+}
+
+.user-card span {
+  text-decoration: none !important;
+  border: none !important;
+  border-bottom: none !important;
+}
+
+.user-card small {
+  text-decoration: none !important;
+  border: none !important;
+  border-bottom: none !important;
+}
+
+.suggestions-list {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.suggestions-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.suggestions-list::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 10px;
+}
+
+.suggestions-list::-webkit-scrollbar-thumb {
+  background: #0dcaf0;
+  border-radius: 10px;
+}
+
+.suggestions-list::-webkit-scrollbar-thumb:hover {
+  background: #0bb5d6;
+}
+
+/* Footer copyright */
+.rightSide1 small {
+  color: var(--text-muted) !important;
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border-color);
+  display: block;
+  font-size: 0.8rem;
+}
+
+/* --------- Additional Enhancements ---------- */
+.home {
+  background: transparent;
+}
+
+/* Enhanced loading states */
+.posts .loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(13, 202, 240, 0.02),
+    rgba(255, 255, 255, 0.8)
+  );
+  border-radius: 20px;
+  margin: 20px 0;
+}
+
+/* Improved comment styles - removed as it's handled in comments.css */
+
+/* Better input styling */
+.status .d-flex {
+  align-items: center;
+  gap: 15px;
+}
+
+/* Footer icon animations */
+.posts .card_icon_menu i.fa-heart {
+  position: relative;
+}
+
+.posts .card_icon_menu i.fa-heart:hover {
+  animation: heartPulse 0.6s ease-in-out;
+}
+
+@keyframes heartPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Social sharing effects */
+.posts .card_icon_menu i.fa-share {
+  position: relative;
+}
+
+.posts .card_icon_menu i.fa-share:hover {
+  animation: shareWobble 0.5s ease-in-out;
+}
+
+@keyframes shareWobble {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+}
+
+/* Save button effect */
+.posts .card_icon_menu i.fa-bookmark:hover {
+  animation: saveFlip 0.4s ease-in-out;
+}
+
+@keyframes saveFlip {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(180deg);
+  }
+}
+
+/* --------- Responsive Design ---------- */
+@media (max-width: 768px) {
+  .status {
+    padding: 20px 15px;
+    border-radius: 15px;
+  }
+
+  .status .statusBtn {
+    padding: 12px 16px;
+    font-size: 14px;
+    margin: 0 10px;
+  }
+
+  .LeftSide,
+  .rightSide1 {
+    padding: 20px;
+    border-radius: 15px;
+  }
+
+  .posts .card {
+    border-radius: 15px;
+    margin-bottom: 20px;
+  }
+
+  .posts .card_header,
+  .posts .card_body-content,
+  .posts .card_icon_menu {
+    padding: 15px 20px;
+  }
+
+  /* Adjust post carousel on tablet - removed max-height to prevent cutoff */
+  .posts .card_body {
+    /* max-height removed to allow full content display */
+  }
+
+  /* Simplify animations on mobile */
+  .posts .card:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Hide sidebar on small tablets */
+  .home .col-md-3 {
+    display: none;
+  }
+
+  /* Make main content full width */
+  .home .col-md-7 {
+    max-width: 100%;
+    flex: 0 0 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .status {
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+
+  .status .statusBtn {
+    padding: 10px 15px;
+    font-size: 13px;
+    margin: 0 5px;
+    border-radius: 20px;
+  }
+
+  .LeftSide,
+  .rightSide1 {
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+
+  .posts .card {
+    border-radius: 12px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 20px var(--shadow-color);
+  }
+
+  .posts .card_header,
+  .posts .card_body-content,
+  .posts .card_icon_menu {
+    padding: 12px 15px;
+  }
+
+  .posts .card_header {
+    padding: 15px;
+  }
+
+  .posts .card_header .card_name h6 {
+    font-size: 14px;
+  }
+
+  .posts .card_header .card_name small {
+    font-size: 12px;
+  }
+
+  .posts .card_icon_menu {
+    padding: 10px 15px;
+  }
+
+  .posts .card_icon_menu i {
+    font-size: 20px;
+    margin: 5px;
+    padding: 8px;
+  }
+
+  /* Post body adjustments - removed max-height to prevent content cutoff */
+  .posts .card_body {
+    /* max-height removed to allow full content display */
+  }
+
+  .posts .card_body-content {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* Carousel controls smaller on mobile */
+  .posts .carousel-control-prev,
+  .posts .carousel-control-next {
+    width: 30px;
+    height: 30px;
+    top: 50%;
+  }
+
+  .posts .carousel-control-prev i,
+  .posts .carousel-control-next i {
+    font-size: 14px;
+  }
+
+  /* Comments section mobile */
+  .card-footer.comment_input {
+    padding: 12px 15px !important;
+  }
+
+  /* Simplify status floating effects on mobile */
+  .floating-status {
+    animation: none;
+  }
+
+  /* Padding for bottom nav is now handled in bottom-nav.css */
+}
+
+@media (max-width: 360px) {
+  .status {
+    padding: 12px;
+  }
+
+  .status .statusBtn {
+    padding: 8px 12px;
+    font-size: 12px;
+    margin: 0 3px;
+  }
+
+  .posts .card {
+    border-radius: 10px;
+    margin-bottom: 12px;
+  }
+
+  .posts .card_header {
+    padding: 12px;
+  }
+
+  .posts .card_icon_menu {
+    padding: 8px 12px;
+    flex-wrap: wrap;
+  }
+
+  .posts .card_icon_menu i {
+    font-size: 18px;
+    margin: 3px;
+    padding: 6px;
+  }
+
+  /* Very small screen carousel - removed max-height to prevent cutoff */
+  .posts .card_body {
+    /* max-height removed to allow full content display */
+  }
+
+  /* Adjust dropdown menu for small screens */
+  .posts .card_header .dropdown-menu {
+    min-width: 150px !important;
+    font-size: 13px;
+  }
+
+  .posts .card_header .dropdown-item {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 320px) {
+  /* Ultra small devices */
+  .status .statusBtn {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .posts .card_header .card_name h6 {
+    font-size: 13px;
+  }
+
+  .posts .card_header .card_name small {
+    font-size: 11px;
+  }
+
+  .posts .card_body-content {
+    font-size: 13px;
+  }
+
+  .posts .card_icon_menu i {
+    font-size: 16px;
+  }
+}
+
+/* ========== Carousel Positioning Fixes for Larger Screens ========== */
+.posts .card_body {
+  position: relative;
+  overflow: visible; /* Changed from hidden to visible to prevent content cutoff */
+}
+
+.posts .carousel {
+  position: relative;
+  width: 100%;
+  isolation: isolate;
+}
+
+.posts .carousel-control-prev,
+.posts .carousel-control-next {
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  margin-top: -20px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+  border: none;
+  outline: none;
+}
+
+.posts .carousel-control-prev {
+  left: 10px;
+}
+
+.posts .carousel-control-next {
+  right: 10px;
+}
+
+.posts .carousel-control-prev:hover,
+.posts .carousel-control-next:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.1);
+}
+
+.posts .carousel-control-prev i,
+.posts .carousel-control-next i {
+  color: white;
+  font-size: 16px;
+}
+
+.posts .carousel-indicators {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  margin: 0;
+}
+
+.posts .carousel-inner {
+  border-radius: 0;
+  overflow: hidden;
+}
+
+/* Ensure carousel images are fully visible */
+.posts .carousel-item img,
+.posts .carousel-item video {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain; /* Changed from cover to contain to show full image */
+}
+
+/* For circular images or logos, maintain aspect ratio */
+.posts .carousel-item img.logo-image,
+.posts .carousel-item img[src*="logo"] {
+  object-fit: contain;
+  padding: 10px; /* Add some padding for logos */
+}
+
+/* Responsive adjustments for small screens */
+@media (max-width: 480px) {
+  .posts .carousel-item img,
+  .posts .carousel-item video {
+    max-height: 400px; /* Reasonable max height for mobile */
+    width: auto;
+    margin: 0 auto;
+    display: block;
+  }
+}
+
+@media (max-width: 360px) {
+  .posts .carousel-item img,
+  .posts .carousel-item video {
+    max-height: 300px; /* Smaller max height for very small screens */
+  }
+}
+
+/* Ensure carousel doesn't interfere with comment menus on larger screens */
+@media (min-width: 769px) {
+  .posts .card_body {
+    margin-bottom: 0;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .posts .carousel-control-prev,
+  .posts .carousel-control-next {
+    width: 45px;
+    height: 45px;
+    margin-top: -22px;
+  }
+  
+  .posts .carousel-control-prev i,
+  .posts .carousel-control-next i {
+    font-size: 18px;
+  }
+  
+  /* Ensure proper card stacking */
+  .posts .card {
+    position: relative;
+    z-index: auto;
+  }
+  
+  .posts .card_icon_menu {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+/* Prevent carousel from affecting comment positioning on desktop */
+@media (min-width: 992px) {
+  .posts .card_body {
+    padding-bottom: 0;
+  }
+  
+  .posts .carousel-control-prev,
+  .posts .carousel-control-next {
+    width: 50px;
+    height: 50px;
+    margin-top: -25px;
+  }
+  
+  .posts .carousel-control-prev i,
+  .posts .carousel-control-next i {
+    font-size: 20px;
+  }
 }

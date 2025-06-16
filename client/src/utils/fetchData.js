@@ -1,79 +1,44 @@
-// import axios from 'axios'
-
-// export const getDataAPI = async (url, token) => {
-//     const res = await axios.get(`/api/${url}`, {
-//         headers: { Authorization: token}
-//     })
-//     return res;
-// }
-
-// export const postDataAPI = async (url, post, token) => {
-//     const res = await axios.post(`/api/${url}`, post, {
-//         headers: { Authorization: token}
-//     })
-//     return res;
-// }
-
-// export const putDataAPI = async (url, post, token) => {
-//     const res = await axios.put(`/api/${url}`, post, {
-//         headers: { Authorization: token}
-//     })
-//     return res;
-// }
-
-// export const patchDataAPI = async (url, post, token) => {
-//     const res = await axios.patch(`/api/${url}`, post, {
-//         headers: { Authorization: token}
-//     })
-//     return res;
-// }
-
-// export const deleteDataAPI = async (url, token) => {
-//     const res = await axios.delete(`/api/${url}`, {
-//         headers: { Authorization: token}
-//     })
-//     return res;
-// }
-
-
-
-
-
 import axios from "axios";
 
 // const baseURL = "http://localhost:80";
-const baseURL = "https://socio-sphere-back.vercel.app";
+const baseURL = "http://localhost:4000";
+
+// Create axios instance with default configuration
+const API = axios.create({
+  baseURL: `${baseURL}/api`,
+  withCredentials: true,
+});
 
 export const getDataAPI = async (url, token) => {
-  const res = await axios.get(`${baseURL}/api/${url}`, {
+  const res = await API.get(url, {
     headers: { Authorization: token },
   });
   return res;
 };
 
 export const postDataAPI = async (url, post, token) => {
-  const res = await axios.post(`${baseURL}/api/${url}`, post, {
+  const res = await API.post(url, post, {
     headers: { Authorization: token },
   });
   return res;
 };
 
 export const putDataAPI = async (url, post, token) => {
-  const res = await axios.put(`${baseURL}/api/${url}`, post, {
+  const res = await API.put(url, post, {
     headers: { Authorization: token },
   });
   return res;
 };
 
 export const patchDataAPI = async (url, post, token) => {
-  const res = await axios.patch(`${baseURL}/api/${url}`, post, {
+  const res = await API.patch(url, post, {
     headers: { Authorization: token },
   });
   return res;
 };
 
 export const deleteDataAPI = async (url, token) => {
-  const res = await axios.delete(`${baseURL}/api/${url}`, {
+  const res = await API.delete(url, {
     headers: { Authorization: token },
   });
   return res;

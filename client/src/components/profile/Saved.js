@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
+import LoadingSpinner from "../LoadingSpinner";
 import PostThumb from "../PostThumb";
-import LoadIcon from "../../images/loading.gif";
 import LoadMoreBtn from "../LoadMoreBtn";
 import { getDataAPI } from "../../utils/fetchData";
 import { GLOBALTYPES } from "../../redux/actions/globalTypes";
@@ -24,6 +24,7 @@ const Saved = ({ auth, dispatch }) => {
           type: GLOBALTYPES.ALERT,
           payload: { error: err.response.data.msg },
         });
+        setLoad(false);
       });
 
     return () => setSavePosts([]);
@@ -42,7 +43,13 @@ const Saved = ({ auth, dispatch }) => {
     <div className="m-auto" style={{ width: "90%" }}>
       <PostThumb posts={savePosts} result={result} />
 
-      {load && <img src={LoadIcon} alt="loading" className="d-block mx-auto" />}
+      {load && (
+        <LoadingSpinner
+          type="spinner"
+          text="Loading saved posts..."
+          size="small"
+        />
+      )}
 
       <LoadMoreBtn
         result={result}
