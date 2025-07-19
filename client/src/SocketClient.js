@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { POST_TYPES } from './redux/actions/postAction'
 import { GLOBALTYPES } from './redux/actions/globalTypes'
 import { NOTIFY_TYPES } from './redux/actions/notifyAction'
-import { MESS_TYPES } from './redux/actions/messageAction'
+import { MESS_TYPES, getUnreadCounts } from './redux/actions/messageAction'
 
 import audiobell from './audio/got-it-done-613.mp3'
 
@@ -29,7 +29,11 @@ const SocketClient = () => {
     // joinUser
     useEffect(() => {
         socket.emit('joinUser', auth.user)
-    },[socket, auth.user])
+        // Load unread counts when socket connects
+        if(auth.token) {
+            dispatch(getUnreadCounts({auth}))
+        }
+    },[socket, auth.user, auth.token, dispatch])
 
     // Likes
     useEffect(() => {
@@ -127,6 +131,31 @@ const SocketClient = () => {
         })
 
         return () => socket.off('addMessageToClient')
+    },[socket, dispatch])
+
+    // Unread count updates
+    useEffect(() => {
+        socket.on('updateUnreadCount', data => {
+            dispatch({type: MESS_TYPES.UPDATE_UNREAD_COUNT, payload: data})
+        })
+
+        return () => socket.off('updateUnreadCount')
+    },[socket, dispatch])
+
+    // Message read receipts
+    useEffect(() => {
+        socket.on('messagesReadToClient', data => {
+            dispatch({
+                type: MESS_TYPES.UPDATE_MESSAGE_READ_STATUS, 
+                payload: {
+                    userId: data.reader,
+                    reader: data.reader,
+                    readAt: data.readAt
+                }
+            })
+        })
+
+        return () => socket.off('messagesReadToClient')
     },[socket, dispatch])
 
     // Check User Online / Offline

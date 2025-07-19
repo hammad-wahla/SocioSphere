@@ -5,7 +5,7 @@ import Avatar from "./Avatar";
 
 const BottomNav = () => {
   const { pathname } = useLocation();
-  const { auth, notify } = useSelector((state) => state);
+  const { auth, notify, message } = useSelector((state) => state);
 
   const navItems = [
     {
@@ -16,7 +16,8 @@ const BottomNav = () => {
     {
       path: "/message",
       icon: "fas fa-comment-dots",
-      label: "Messages"
+      label: "Messages",
+      badge: message.totalUnread
     },
     {
       path: "/discover",

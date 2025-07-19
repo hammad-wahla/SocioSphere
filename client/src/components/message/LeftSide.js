@@ -197,6 +197,15 @@ const LeftSide = () => {
                   </div>
 
                   <div className="chat-status">
+                    {/* Unread count badge */}
+                    {message.unreadCounts[user._id] > 0 && (
+                      <span className="chat-unread-badge">
+                        {message.unreadCounts[user._id] > 99 
+                          ? "99+" 
+                          : message.unreadCounts[user._id]}
+                      </span>
+                    )}
+                    
                     {user.online ? (
                       <div className="online-status online">
                         <i className="fas fa-circle"></i>

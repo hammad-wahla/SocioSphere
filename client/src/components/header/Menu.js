@@ -14,7 +14,7 @@ const Menu = () => {
     { label: "Discover", icon: "fas fa-compass", path: "/discover" },
   ];
 
-  const { auth, theme, notify } = useSelector((state) => state);
+  const { auth, theme, notify, message } = useSelector((state) => state);
   const dispatch = useDispatch();
   const { pathname } = useLocation();
 
@@ -74,7 +74,7 @@ const Menu = () => {
         {navLinks.map((link, index) => (
           <li className={`nav-item px-2 ${isActive(link.path)}`} key={index}>
             <Link
-              className="nav-link nav-icon-link"
+              className="nav-link nav-icon-link position-relative"
               to={link.path}
               title={link.label}
             >
@@ -82,6 +82,13 @@ const Menu = () => {
               <span className="nav-label d-none d-md-inline ms-1">
                 {link.label}
               </span>
+              
+              {/* Message badge */}
+              {link.path === "/message" && message.totalUnread > 0 && (
+                <span className="notify-badge-count">
+                  {message.totalUnread > 99 ? "99+" : message.totalUnread}
+                </span>
+              )}
             </Link>
           </li>
         ))}

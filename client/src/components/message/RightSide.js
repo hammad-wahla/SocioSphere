@@ -12,6 +12,7 @@ import {
   getMessages,
   loadMoreMessages,
   deleteConversation,
+  markMessagesAsRead,
 } from "../../redux/actions/messageAction";
 import LoadingSpinner from "../LoadingSpinner";
 import ConfirmModal from "../ConfirmModal";
@@ -21,15 +22,19 @@ const RightSide = () => {
   const dispatch = useDispatch();
 
   const { id } = useParams();
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState(null);
   const [text, setText] = useState("");
   const [media, setMedia] = useState([]);
   const [loadMedia, setLoadMedia] = useState(false);
   const [showDeleteConversationModal, setShowDeleteConversationModal] =
     useState(false);
+  const [showScrollButton, setShowScrollButton] = useState(false);
+  const [newMessagesCount, setNewMessagesCount] = useState(0);
+  const [isAtBottom, setIsAtBottom] = useState(true);
 
   const refDisplay = useRef();
   const pageEnd = useRef();
+  const messagesContainerRef = useRef();
 
   const [data, setData] = useState([]);
   const [result, setResult] = useState(9);
@@ -41,11 +46,25 @@ const RightSide = () => {
   useEffect(() => {
     const newData = message.data.find((item) => item._id === id);
     if (newData) {
+      const prevLength = data.length;
       setData(newData.messages);
       setResult(newData.result);
       setPage(newData.page);
+      
+      // Check if new message arrived while user is scrolled up
+      if (newData.messages.length > prevLength && !isAtBottom && prevLength > 0) {
+        // New message received and user is not at bottom
+        const newMsgCount = newData.messages.length - prevLength;
+        const lastMsg = newData.messages[newData.messages.length - 1];
+        
+        // Only show button if the new message is from the other user
+        if (lastMsg.sender !== auth.user._id) {
+          setShowScrollButton(true);
+          setNewMessagesCount(prev => prev + newMsgCount);
+        }
+      }
     }
-  }, [message.data, id]);
+  }, [message.data, id, isAtBottom, auth.user._id]);
 
   useEffect(() => {
     if (id && message.users.length > 0) {
@@ -119,9 +138,13 @@ const RightSide = () => {
           });
         }, 50);
       }
+      // Mark messages as read when opening conversation
+      if (socket) {
+        dispatch(markMessagesAsRead({ auth, id, socket }));
+      }
     };
     getMessagesData();
-  }, [id, dispatch, auth, message.data]);
+  }, [id, dispatch, auth, message.data, socket]);
 
   // Load More
   useEffect(() => {
@@ -138,6 +161,34 @@ const RightSide = () => {
 
     observer.observe(pageEnd.current);
   }, [setIsLoadMore]);
+
+  // Scroll detection
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = container;
+      const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
+      setIsAtBottom(isNearBottom);
+      
+      // Hide scroll button if user manually scrolls to bottom
+      if (isNearBottom) {
+        setShowScrollButton(false);
+        setNewMessagesCount(0);
+      }
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Handle scroll to bottom
+  const scrollToBottom = () => {
+    refDisplay.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    setShowScrollButton(false);
+    setNewMessagesCount(0);
+  };
 
   useEffect(() => {
     if (isLoadMore > 1) {
@@ -179,6 +230,8 @@ const RightSide = () => {
   };
 
   const callUser = ({ video }) => {
+    if (!user) return;
+    
     const { _id, avatar, username, fullname } = auth.user;
 
     const msg = {
@@ -209,7 +262,7 @@ const RightSide = () => {
     <div className="chat-container-modern">
       {/* Modern Chat Header */}
       <div className="chat-header-modern">
-        {user.length !== 0 && (
+        {user && (
           <div className="chat-header-content">
             <div className="chat-user-info">
               <UserCard user={user} />
@@ -243,31 +296,45 @@ const RightSide = () => {
 
       {/* Modern Chat Messages Area */}
       <div className="chat-messages-container">
-        <div className="chat-messages-scroll" ref={refDisplay}>
+        <div className="chat-messages-scroll" ref={messagesContainerRef}>
           <button className="load-more-trigger" ref={pageEnd}>
             Load more
           </button>
 
-          {data.map((msg, index) => (
-            <div key={index} className="message-wrapper">
-              {msg.sender !== auth.user._id && (
-                <div className="message-row received">
-                  <MsgDisplay user={user} msg={msg} theme={theme} />
-                </div>
-              )}
+          {data.map((msg, index) => {
+            // Find the last message that was read by the other user
+            const isLastRead = msg.sender === auth.user._id && 
+                             msg.isRead && 
+                             (index === data.length - 1 || !data[index + 1]?.isRead);
+            
+            return (
+              <div key={index} className="message-wrapper">
+                {msg.sender !== auth.user._id && user && (
+                  <div className="message-row received">
+                    <MsgDisplay user={user} msg={msg} theme={theme} />
+                  </div>
+                )}
 
-              {msg.sender === auth.user._id && (
-                <div className="message-row sent">
-                  <MsgDisplay
-                    user={auth.user}
-                    msg={msg}
-                    theme={theme}
-                    data={data}
-                  />
-                </div>
-              )}
-            </div>
-          ))}
+                {msg.sender === auth.user._id && (
+                  <>
+                    <div className="message-row sent">
+                      <MsgDisplay
+                        user={auth.user}
+                        msg={msg}
+                        theme={theme}
+                        data={data}
+                      />
+                    </div>
+                    {isLastRead && (
+                      <div className="seen-indicator">
+                        <span>Seen</span>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            );
+          })}
 
           {loadMedia && (
             <div className="message-row sent">
@@ -277,7 +344,20 @@ const RightSide = () => {
               </div>
             </div>
           )}
+
+          <div ref={refDisplay} />
         </div>
+
+        {/* Scroll to bottom button */}
+        {showScrollButton && (
+          <button 
+            className="scroll-to-bottom-btn" 
+            onClick={scrollToBottom}
+            title="Scroll to bottom"
+          >
+            <i className="fas fa-chevron-down"></i>
+          </button>
+        )}
       </div>
 
       {/* Media Preview Area */}

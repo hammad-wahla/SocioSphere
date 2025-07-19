@@ -5,7 +5,9 @@ const initialState = {
     users: [],
     resultUsers: 0,
     data: [],
-    firstLoad: false
+    firstLoad: false,
+    unreadCounts: {}, // { userId: count }
+    totalUnread: 0
 }
 
 const messageReducer = (state = initialState, action) => {
@@ -80,6 +82,52 @@ const messageReducer = (state = initialState, action) => {
                     action.payload.includes(user._id)
                     ? {...user, online: true}
                     : {...user, online: false}
+                )
+            };
+        case MESS_TYPES.UPDATE_UNREAD_COUNT:
+            const newUnreadCounts = { ...state.unreadCounts };
+            if (action.payload.increment) {
+                newUnreadCounts[action.payload.sender] = (newUnreadCounts[action.payload.sender] || 0) + 1;
+            } else {
+                delete newUnreadCounts[action.payload.sender];
+            }
+            return {
+                ...state,
+                unreadCounts: newUnreadCounts,
+                totalUnread: Object.keys(newUnreadCounts).length
+            };
+        case MESS_TYPES.SET_UNREAD_COUNTS:
+            const counts = {};
+            action.payload.unreadCounts.forEach(item => {
+                counts[item.userId] = item.count;
+            });
+            return {
+                ...state,
+                unreadCounts: counts,
+                totalUnread: action.payload.totalUnread
+            };
+        case MESS_TYPES.CLEAR_UNREAD_COUNT:
+            const updatedCounts = { ...state.unreadCounts };
+            delete updatedCounts[action.payload];
+            return {
+                ...state,
+                unreadCounts: updatedCounts,
+                totalUnread: Object.keys(updatedCounts).length
+            };
+        case MESS_TYPES.UPDATE_MESSAGE_READ_STATUS:
+            return {
+                ...state,
+                data: state.data.map(item => 
+                    item._id === action.payload.userId
+                    ? {
+                        ...item,
+                        messages: item.messages.map(msg => 
+                            msg.recipient === action.payload.reader && !msg.isRead
+                            ? {...msg, isRead: true, readAt: action.payload.readAt}
+                            : msg
+                        )
+                    }
+                    : item
                 )
             };
         default:

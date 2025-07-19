@@ -12,5 +12,9 @@ router.delete('/message/:id', auth, messageCtrl.deleteMessages)
 
 router.delete('/conversation/:id', auth, messageCtrl.deleteConversation)
 
+router.get('/unread-counts', auth, messageCtrl.getUnreadCounts)
+
+router.patch('/mark-read/:id', auth, messageCtrl.markMessagesAsRead)
+
 
 module.exports = router
