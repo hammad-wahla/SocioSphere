@@ -76,6 +76,16 @@ const messageCtrl = {
 
             const messages = await features.query.sort('-createdAt')
 
+            // Mark messages as read where current user is recipient
+            await Messages.updateMany({
+                sender: req.params.id,
+                recipient: req.user._id,
+                isRead: false
+            }, {
+                isRead: true,
+                readAt: new Date()
+            })
+
             res.json({
                 messages,
                 result: messages.length
@@ -108,6 +118,73 @@ const messageCtrl = {
             return res.status(500).json({msg: err.message})
         }
     },
+    getUnreadCounts: async (req, res) => {
+        try {
+            // Get unread message counts grouped by sender
+            const unreadCounts = await Messages.aggregate([
+                {
+                    $match: {
+                        recipient: req.user._id,
+                        isRead: false
+                    }
+                },
+                {
+                    $group: {
+                        _id: '$sender',
+                        count: { $sum: 1 }
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: '_id',
+                        foreignField: '_id',
+                        as: 'user'
+                    }
+                },
+                {
+                    $unwind: '$user'
+                },
+                {
+                    $project: {
+                        userId: '$_id',
+                        count: 1,
+                        username: '$user.username',
+                        avatar: '$user.avatar'
+                    }
+                }
+            ])
+
+            // Get total unique conversations with unread messages
+            const totalUnread = unreadCounts.length
+
+            res.json({
+                unreadCounts,
+                totalUnread
+            })
+        } catch (err) {
+            return res.status(500).json({msg: err.message})
+        }
+    },
+    markMessagesAsRead: async (req, res) => {
+        try {
+            const result = await Messages.updateMany({
+                sender: req.params.id,
+                recipient: req.user._id,
+                isRead: false
+            }, {
+                isRead: true,
+                readAt: new Date()
+            })
+
+            res.json({
+                msg: 'Messages marked as read',
+                modifiedCount: result.modifiedCount
+            })
+        } catch (err) {
+            return res.status(500).json({msg: err.message})
+        }
+    }
 }
 
 

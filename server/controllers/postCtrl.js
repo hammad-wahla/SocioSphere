@@ -127,13 +127,34 @@ const postCtrl = {
     },
     getUserPosts: async (req, res) => {
         try {
+            // Check if the profile owner has a private account
+            const profileUser = await Users.findById(req.params.id).select('isPrivate followers')
+            
+            if (!profileUser) {
+                return res.status(404).json({ msg: 'User not found.' })
+            }
+
+            // Check privacy: if private account and viewer is not following, return empty
+            const isFollowing = profileUser.followers.includes(req.user._id)
+            const isOwnProfile = req.params.id === req.user._id.toString()
+            
+            if (profileUser.isPrivate && !isFollowing && !isOwnProfile) {
+                return res.json({
+                    posts: [],
+                    result: 0,
+                    isPrivate: true,
+                    msg: 'This account is private.'
+                })
+            }
+
             const features = new APIfeatures(Posts.find({user: req.params.id}), req.query)
             .paginating()
             const posts = await features.query.sort("-createdAt")
 
             res.json({
                 posts,
-                result: posts.length
+                result: posts.length,
+                isPrivate: profileUser.isPrivate
             })
 
         } catch (err) {
@@ -143,7 +164,7 @@ const postCtrl = {
     getPost: async (req, res) => {
         try {
             const post = await Posts.findById(req.params.id)
-            .populate("user likes", "avatar username fullname followers")
+            .populate("user likes", "avatar username fullname followers isPrivate")
             .populate({
                 path: "comments",
                 populate: {
@@ -153,6 +174,17 @@ const postCtrl = {
             })
 
             if(!post) return res.status(400).json({msg: 'This post does not exist.'})
+
+            // Check if post owner has private account
+            const postOwner = post.user
+            const isFollowing = postOwner.followers.some(follower => follower.toString() === req.user._id.toString())
+            const isOwnPost = postOwner._id.toString() === req.user._id.toString()
+
+            if (postOwner.isPrivate && !isFollowing && !isOwnPost) {
+                return res.status(403).json({
+                    msg: 'This post is from a private account. Follow the user to see their posts.'
+                })
+            }
 
             res.json({
                 post
@@ -164,15 +196,28 @@ const postCtrl = {
     },
     getPostsDicover: async (req, res) => {
         try {
-
             const newArr = [...req.user.following, req.user._id]
+            const num = req.query.num || 9
 
-            const num  = req.query.num || 9
+            // First get all non-private users
+            const publicUsers = await Users.find({
+                _id: { $nin: newArr },
+                isPrivate: false
+            }).select('_id')
 
+            const publicUserIds = publicUsers.map(user => user._id)
+
+            // Only get posts from public accounts
             const posts = await Posts.aggregate([
-                { $match: { user : { $nin: newArr } } },
+                { $match: { user: { $in: publicUserIds } } },
                 { $sample: { size: Number(num) } },
             ])
+
+            // Populate user data
+            await Posts.populate(posts, {
+                path: 'user likes',
+                select: 'avatar username fullname followers'
+            })
 
             return res.json({
                 msg: 'Success!',

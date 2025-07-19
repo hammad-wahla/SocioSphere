@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import Avatar from "../Avatar";
 import { imageShow, videoShow } from "../../utils/mediaShow";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteMessages } from "../../redux/actions/messageAction";
@@ -50,6 +49,24 @@ const MsgDisplay = ({ user, msg, theme, data }) => {
     setShowOptions(false);
   };
 
+  const handleSaveImage = () => {
+    if (msg.media && msg.media.length > 0) {
+      // Download each image
+      msg.media.forEach((item, index) => {
+        if (!item.url.match(/video/i)) {
+          const link = document.createElement('a');
+          link.href = item.url;
+          link.download = `image_${Date.now()}_${index}.jpg`;
+          link.target = '_blank';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      });
+    }
+    setShowOptions(false);
+  };
+
   const isOwnMessage = user._id === auth.user._id;
   const hasTextContent = msg.text && msg.text.trim() !== "";
   const hasCallContent = msg.call;
@@ -58,40 +75,6 @@ const MsgDisplay = ({ user, msg, theme, data }) => {
   return (
     <div className="message-display-modern">
       <div className="message-content-wrapper">
-        {/* Options button for received messages (left side) */}
-        {!isOwnMessage && (
-          <div
-            className="message-options-container options-left"
-            ref={optionsRef}
-          >
-            <button
-              className="message-options-btn"
-              onClick={() => setShowOptions(!showOptions)}
-              title="Message options"
-            >
-              <i className="fas fa-ellipsis-v"></i>
-            </button>
-
-            {showOptions && (
-              <div className="message-options-menu menu-left">
-                {hasTextContent && (
-                  <button className="option-item" onClick={handleCopyMessage}>
-                    <i className="fas fa-copy"></i>
-                    Copy Text
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Avatar for received messages */}
-        {user._id !== auth.user._id && (
-          <div className="message-avatar">
-            <Avatar src={user.avatar} size="tiny-avatar" />
-          </div>
-        )}
-
         <div
           className={`message-bubble ${
             user._id === auth.user._id ? "sent" : "received"
@@ -156,15 +139,8 @@ const MsgDisplay = ({ user, msg, theme, data }) => {
           </div>
         </div>
 
-        {/* Avatar for sent messages */}
-        {user._id === auth.user._id && (
-          <div className="message-avatar">
-            <Avatar src={user.avatar} size="tiny-avatar" />
-          </div>
-        )}
-
-        {/* Options button for sent messages (right side) */}
-        {isOwnMessage && (
+        {/* Options button - right side for received messages */}
+        {!isOwnMessage && !hasCallContent && (
           <div
             className="message-options-container options-right"
             ref={optionsRef}
@@ -179,6 +155,39 @@ const MsgDisplay = ({ user, msg, theme, data }) => {
 
             {showOptions && (
               <div className="message-options-menu menu-right">
+                {hasTextContent && !hasMediaContent && (
+                  <button className="option-item" onClick={handleCopyMessage}>
+                    <i className="fas fa-copy"></i>
+                    Copy Text
+                  </button>
+                )}
+                {hasMediaContent && (
+                  <button className="option-item" onClick={handleSaveImage}>
+                    <i className="fas fa-download"></i>
+                    Save
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Options button - left side for sent messages */}
+        {isOwnMessage && (
+          <div
+            className="message-options-container options-left"
+            ref={optionsRef}
+          >
+            <button
+              className="message-options-btn"
+              onClick={() => setShowOptions(!showOptions)}
+              title="Message options"
+            >
+              <i className="fas fa-ellipsis-v"></i>
+            </button>
+
+            {showOptions && (
+              <div className="message-options-menu menu-left">
                 {hasTextContent && (
                   <button className="option-item" onClick={handleCopyMessage}>
                     <i className="fas fa-copy"></i>

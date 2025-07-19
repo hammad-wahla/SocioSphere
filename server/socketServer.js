@@ -116,6 +116,27 @@ const SocketServer = (socket) => {
     socket.on('addMessage', msg => {
         const user = users.find(user => user.id === msg.recipient)
         user && socket.to(`${user.socketId}`).emit('addMessageToClient', msg)
+        
+        // Send unread count update to recipient
+        user && socket.to(`${user.socketId}`).emit('updateUnreadCount', {
+            sender: msg.sender,
+            increment: true
+        })
+    })
+
+    // Mark messages as read
+    socket.on('markMessagesRead', data => {
+        const user = users.find(user => user.id === data.sender)
+        user && socket.to(`${user.socketId}`).emit('messagesReadToClient', {
+            reader: data.reader,
+            readAt: data.readAt
+        })
+    })
+
+    // Update unread counts
+    socket.on('updateUnreadCounts', data => {
+        const user = users.find(user => user.id === data.userId)
+        user && socket.to(`${user.socketId}`).emit('updateUnreadCountsToClient', data.counts)
     })
 
 

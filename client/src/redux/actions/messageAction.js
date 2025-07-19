@@ -1,5 +1,5 @@
 import { GLOBALTYPES, DeleteData } from '../actions/globalTypes'
-import { postDataAPI, getDataAPI, deleteDataAPI } from '../../utils/fetchData'
+import { postDataAPI, getDataAPI, deleteDataAPI, patchDataAPI } from '../../utils/fetchData'
 
 export const MESS_TYPES = {
     ADD_USER: 'ADD_USER',
@@ -9,7 +9,11 @@ export const MESS_TYPES = {
     UPDATE_MESSAGES: 'UPDATE_MESSAGES',
     DELETE_MESSAGES: 'DELETE_MESSAGES',
     DELETE_CONVERSATION: 'DELETE_CONVERSATION',
-    CHECK_ONLINE_OFFLINE: 'CHECK_ONLINE_OFFLINE'
+    CHECK_ONLINE_OFFLINE: 'CHECK_ONLINE_OFFLINE',
+    UPDATE_UNREAD_COUNT: 'UPDATE_UNREAD_COUNT',
+    SET_UNREAD_COUNTS: 'SET_UNREAD_COUNTS',
+    CLEAR_UNREAD_COUNT: 'CLEAR_UNREAD_COUNT',
+    UPDATE_MESSAGE_READ_STATUS: 'UPDATE_MESSAGE_READ_STATUS'
 }
 
 
@@ -56,6 +60,9 @@ export const getMessages = ({auth, id, page = 1}) => async (dispatch) => {
         const newData = {...res.data, messages: res.data.messages.reverse()}
 
         dispatch({type: MESS_TYPES.GET_MESSAGES, payload: {...newData, _id: id, page}})
+        
+        // Clear unread count for this conversation
+        dispatch({type: MESS_TYPES.CLEAR_UNREAD_COUNT, payload: id})
     } catch (err) {
         dispatch({type: GLOBALTYPES.ALERT, payload: {error: err.response.data.msg}})
     }
@@ -86,6 +93,35 @@ export const deleteConversation = ({auth, id}) => async (dispatch) => {
     dispatch({type: MESS_TYPES.DELETE_CONVERSATION, payload: id})
     try {
         await deleteDataAPI(`conversation/${id}`, auth.token)
+    } catch (err) {
+        dispatch({type: GLOBALTYPES.ALERT, payload: {error: err.response.data.msg}})
+    }
+}
+
+export const getUnreadCounts = ({auth}) => async (dispatch) => {
+    try {
+        const res = await getDataAPI('unread-counts', auth.token)
+        dispatch({
+            type: MESS_TYPES.SET_UNREAD_COUNTS, 
+            payload: res.data
+        })
+    } catch (err) {
+        dispatch({type: GLOBALTYPES.ALERT, payload: {error: err.response.data.msg}})
+    }
+}
+
+export const markMessagesAsRead = ({auth, id, socket}) => async (dispatch) => {
+    try {
+        dispatch({type: MESS_TYPES.CLEAR_UNREAD_COUNT, payload: id})
+        
+        await patchDataAPI(`mark-read/${id}`, {}, auth.token)
+        
+        // Notify sender that messages were read
+        socket.emit('markMessagesRead', {
+            sender: id,
+            reader: auth.user._id,
+            readAt: new Date()
+        })
     } catch (err) {
         dispatch({type: GLOBALTYPES.ALERT, payload: {error: err.response.data.msg}})
     }
