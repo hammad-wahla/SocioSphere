@@ -1,7 +1,8 @@
 import axios from "axios";
 
-// const baseURL = "http://localhost:80";
-const baseURL = "http://localhost:4000";
+const baseURL =
+  "https://69f218f0-915f-473f-9072-57a577b86780-00-1sjx3pcr451nc.pike.replit.dev";
+// const baseURL = "http://localhost:4000";
 
 // Create axios instance with default configuration
 const API = axios.create({
