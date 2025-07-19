@@ -50,7 +50,9 @@ function App() {
       setAuthLoading(false);
     }
 
-    const socket = io();
+    const socket = io("https://69f218f0-915f-473f-9072-57a577b86780-00-1sjx3pcr451nc.pike.replit.dev", {
+      withCredentials: true
+    });
     dispatch({ type: GLOBALTYPES.SOCKET, payload: socket });
     return () => socket.close();
   }, [dispatch]);

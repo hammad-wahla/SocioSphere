@@ -12,7 +12,7 @@ app.use(express.json());
 // app.use(cors());
 app.use(
   cors({
-    origin: ["https://sociosphere-ten.vercel.app", "http://localhost:3000"],
+    origin: ["https://sociosphere-ten.vercel.app", "http://localhost:3000", "https://69f218f0-915f-473f-9072-57a577b86780-00-1sjx3pcr451nc.pike.replit.dev"],
     credentials: true,
   })
 );
@@ -20,7 +20,12 @@ app.use(cookieParser());
 
 // Socket
 const http = require("http").createServer(app);
-const io = require("socket.io")(http);
+const io = require("socket.io")(http, {
+  cors: {
+    origin: ["https://sociosphere-ten.vercel.app", "http://localhost:3000", "https://69f218f0-915f-473f-9072-57a577b86780-00-1sjx3pcr451nc.pike.replit.dev"],
+    credentials: true
+  }
+});
 
 io.on("connection", (socket) => {
   SocketServer(socket);
